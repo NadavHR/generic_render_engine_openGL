@@ -19,6 +19,7 @@
 // #include "headers/model.hpp"
 // #include "headers/model_render_object.hpp"
 // #include "headers/screen_renderer.hpp"
+#include "headers/render_params.hpp"
 #include "headers/input.hpp"
 #include "headers/timing.hpp"
 
@@ -28,12 +29,13 @@ using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void bindInputs(GLFWwindow *window);
 
 // Camera cam(glm::vec3(0.0f, 0.0f, 0.0f));
 bool firstMouse = true;
 glm::vec2 mousePosition;
 float deltaTimeSec = 0;
+RenderParams * renderParams;
+
 int main()
 {
     // glfw: initialize and configure
@@ -78,7 +80,7 @@ int main()
     // stbi_set_flip_vertically_on_load(true);
 
     // transformation
-    glm::mat4 projection = glm::perspective(glm::radians(cam.FovY), (float)screen::SCR_WIDTH / (float)screen::SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = renderParams->getProjectionMatrix();
     // render loop
     // -----------
 
@@ -92,7 +94,6 @@ int main()
     spaceship = new Spaceship(*crosshair);
     ScreenRenderer screenRenderer(rendering::renderer, &screenShader);
     
-    bindInputs(window);
     float lastFrameSec = static_cast<float>(glfwGetTime());
 
     while (!glfwWindowShouldClose(window))
@@ -104,7 +105,6 @@ int main()
         lastFrameSec = currentFrameSec;
         // cout << 1/timing::deltaTimeSec << endl;
         
-        InputAction::runChecksAndActions(window);
         // spaceship->periodic(timing::deltaTimeSec);
         renderer.render();
         TimedEffect::allPeriodic();
@@ -119,45 +119,14 @@ int main()
         glfwPollEvents();
     }
 
-    // optional: de-allocate all resources once they've outlived their purpose:
-    // ------------------------------------------------------------------------
-
-    // glDeleteProgram(shaderProgram);
-
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
-    InputAction::deleteAllBoundActions();
-    delete spaceship;
     return 0;
 }
 
 float getDeltaTimeRawSec() {
     return deltaTimeSec;
-}
-
-
-// bind all inputs
-// ---------------------------------------------------------------------------------------------------------
-void bindInputs(GLFWwindow *window) {
-    auto closeWindow = new InputAction(GLFW_KEY_ESCAPE, GLFW_PRESS, [&]() { glfwSetWindowShouldClose(window, true);});
-    closeWindow->bind();
-
-    auto up = new InputAction(GLFW_KEY_W, GLFW_PRESS, [&](){ spaceship->inputY(1.0);});
-    up->bind();
-
-    auto down = new InputAction(GLFW_KEY_S, GLFW_PRESS, [&](){ spaceship->inputY(-1.0);});
-    down->bind();
-
-    auto left = new InputAction(GLFW_KEY_A, GLFW_PRESS, [&]() { spaceship->inputX(-1.0);});
-    left->bind();
-
-    auto right = new InputAction(GLFW_KEY_D, GLFW_PRESS, [&]() { spaceship->inputX(1.0);});
-    right->bind();
-
-    auto shoot = new InputAction(GLFW_KEY_E, GLFW_PRESS, [&]() {spaceship->shoot(true);}, [&]() {spaceship->shoot(false);});
-    shoot->bind();
-
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

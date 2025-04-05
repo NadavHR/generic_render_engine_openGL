@@ -7,6 +7,7 @@
 */
 float getDeltaTimeRawSec();
 
+float timeScalar = 1.0; // I planned on making it private by making it a private static variable but im lazy
 
 /** Gives a deltaTime (by default in seconds) that is scaled by some "time scalar", this allows for speeding up or slowing down time   
  * 
@@ -15,7 +16,7 @@ float getDeltaTimeRawSec();
 float getDeltaTime() {  
     return getDeltaTimeRawSec() * timeScalar;
 }
-float timeScalar = 1.0; // TODO: make this private so it could be only accessed with getters and setters that limit its range according to settings
+
 
 
 #endif /* TIMING_HPP */
