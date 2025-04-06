@@ -19,9 +19,9 @@
 // #include "headers/model.hpp"
 // #include "headers/model_render_object.hpp"
 // #include "headers/screen_renderer.hpp"
-#include "headers/render_params.hpp"
-#include "headers/input.hpp"
-#include "headers/timing.hpp"
+#include "render_params.hpp"
+#include "input.hpp"
+#include "timing.hpp"
 
 
 using namespace std;
@@ -34,7 +34,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 bool firstMouse = true;
 glm::vec2 mousePosition;
 float deltaTimeSec = 0;
-RenderParams * renderParams;
+RenderParams * renderParams = new RenderParams();
 
 int main()
 {
@@ -45,11 +45,13 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    renderParams->screenWidth = 900;
+    renderParams->screenHeight = 500;
     
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(screen::SCR_WIDTH, screen::SCR_HEIGHT, "Space Shooter", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(renderParams->screenWidth, renderParams->screenHeight, "Render Engine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -82,36 +84,20 @@ int main()
     // transformation
     glm::mat4 projection = renderParams->getProjectionMatrix();
     // render loop
-    // -----------
-
-    Shader screenShader("shaders/screen.vs", "shaders/screen.fs");
-    screenShader.use();
-    screenShader.setInt("screenTexture", 0);
-    Renderer renderer = Renderer(screen::SCR_WIDTH, screen::SCR_HEIGHT);
-    rendering::renderer = &renderer;
-    Crosshair cross = Crosshair(screen::SCR_WIDTH, screen::SCR_HEIGHT, cam);
-    crosshair = &cross;
-    spaceship = new Spaceship(*crosshair);
-    ScreenRenderer screenRenderer(rendering::renderer, &screenShader);
-    
+    // -----------    
     float lastFrameSec = static_cast<float>(glfwGetTime());
 
     while (!glfwWindowShouldClose(window))
     {
         glEnable(GL_DEPTH_TEST);  // enable depth test
-        renderer.clear(); 
+        // renderer.clear(); 
         float currentFrameSec = static_cast<float>(glfwGetTime());
         deltaTimeSec = currentFrameSec - lastFrameSec;
         lastFrameSec = currentFrameSec;
-        // cout << 1/timing::deltaTimeSec << endl;
-        
-        // spaceship->periodic(timing::deltaTimeSec);
-        renderer.render();
-        TimedEffect::allPeriodic();
-        crosshair->periodic();
-        screenRenderer.renderToScreen();
 
-        // glBindVertexArray(0); // no need to unbind it every time 
+        cout << 1.0 / deltaTimeSec << endl;
+        
+        // renderer.render();
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

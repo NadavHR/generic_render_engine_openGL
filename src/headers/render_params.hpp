@@ -11,8 +11,6 @@ class RenderParams {
         glm::mat4 getProjectionMatrix() {
             return glm::perspective(fovRadians, (float)screenWidth / (float)screenHeight, nearField, farField);
         }
-
-
 };
 
 #endif /* RENDER_PARAMS_HPP */

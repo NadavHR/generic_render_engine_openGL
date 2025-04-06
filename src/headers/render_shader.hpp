@@ -1,0 +1,36 @@
+#ifndef RENDER_SHADER_HPP
+#define RENDER_SHADER_HPP
+#include <string>
+#include <glm/glm.hpp>
+#include <unordered_map>
+#include <iostream>
+#include "basic_shader.hpp"
+#include <type_ptr.hpp>
+
+class RenderShader
+{
+    private:
+        unsigned int mProgramID;
+        static unsigned int currentlyUsedProgramID;
+        std::unordered_map<std::string, GLint> uniformLookup;
+        GLint getUniformLocation(const std::string &name);
+
+    public:
+        RenderShader(BasicShader const vertexShader, BasicShader const fragmentShader);
+        ~RenderShader();
+        // use/activate the shader
+        void use();
+        bool isCurrentlyUsed() const;
+        // utility uniform functions
+        void setBool(const std::string &name, bool value);  
+        void setInt(const std::string &name, int value);  
+        void setFloat(const std::string &name, float value);
+        void setTransform(const std::string &name, glm::mat4 value);
+        void setVec3(const std::string &name, glm::vec3 value);
+        void setVec2(const std::string &name, glm::vec2 value);
+        unsigned int getProgramID() const;
+};
+
+
+
+#endif /* RENDER_SHADER_HPP */

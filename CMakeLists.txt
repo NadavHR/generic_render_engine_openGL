@@ -32,14 +32,9 @@ target_include_directories(generic_render_engine PUBLIC "src/" "src/headers/" "s
 add_custom_command(
         TARGET generic_render_engine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/src/models/
-                ${CMAKE_CURRENT_BINARY_DIR}/models/)
-add_custom_command(
-    TARGET generic_render_engine POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${CMAKE_SOURCE_DIR}/src/shaders/
-            ${CMAKE_CURRENT_BINARY_DIR}/shaders/)
-                
+                ${CMAKE_SOURCE_DIR}/src/game_assets/
+                ${CMAKE_CURRENT_BINARY_DIR}/game_assets/)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 
