@@ -8,7 +8,7 @@ class ISpatialRenderObject : public IRenderObject
         const glm::vec4 X_BASE_VECTOR = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
         const glm::vec4 Y_BASE_VECTOR = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
         const glm::vec4 Z_BASE_VECTOR = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
-        
+
         glm::mat4 getTransformationMatrix() {
             // scale
             glm::mat4 scale(1.0f);  
@@ -29,6 +29,7 @@ class ISpatialRenderObject : public IRenderObject
         }
 
     protected:
+        ISpatialRenderObject(glm::vec3 &position, glm::vec3 &rotation, glm::vec3 &scale) : mPosition(position), mRotation(rotation), mScale(scale) {} 
         glm::vec3 &mPosition;
         glm::vec3 &mRotation;
         glm::vec3 &mScale;
