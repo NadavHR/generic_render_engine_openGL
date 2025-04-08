@@ -3,8 +3,8 @@
 #include <string>
 #include <fstream>
 #include <cstring>
-#include <gl2.h>
 #include <iostream>
+#include <glad/glad.h> 
 
 class BasicShader {
     public:

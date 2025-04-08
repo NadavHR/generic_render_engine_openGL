@@ -26,7 +26,7 @@ target_link_libraries(generic_render_engine PRIVATE glad::glad)
 target_link_libraries(generic_render_engine PRIVATE glm::glm-header-only)
 target_link_libraries(generic_render_engine PRIVATE assimp::assimp)
 
-target_include_directories(generic_render_engine PUBLIC "src/" "src/headers/" "src/classes/")
+target_include_directories(generic_render_engine PUBLIC "src/" "src/classes/" "src/headers/" "src/headers/render_objects/" "src/headers/rendering/" "src/headers/shading/")
 
 
 add_custom_command(

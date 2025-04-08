@@ -1,6 +1,7 @@
 #include "render_shader.hpp"
 
 
+
 unsigned int RenderShader::currentlyUsedProgramID = 0;
 
 GLint RenderShader::getUniformLocation(const std::string &name)

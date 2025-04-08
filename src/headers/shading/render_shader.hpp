@@ -4,8 +4,10 @@
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include <iostream>
+#include <glad/glad.h> 
+#include <glm/gtc/type_ptr.hpp>
 #include "basic_shader.hpp"
-#include <type_ptr.hpp>
+
 
 class RenderShader
 {

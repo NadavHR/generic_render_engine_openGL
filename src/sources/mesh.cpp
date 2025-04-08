@@ -31,7 +31,7 @@ void Mesh::bindTextures(RenderShader &shader) {
         else if(name == "texture_height")
             number = std::to_string(heightNr++); // transfer unsigned int to string
 
-        shader.setTexture2D(name + number, i + 1, textures[i].id);
+        shader.setTexture2D(name + number, i, textures[i].id);
     }
 }
 
