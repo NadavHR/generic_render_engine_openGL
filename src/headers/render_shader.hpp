@@ -13,7 +13,6 @@ class RenderShader
         unsigned int mProgramID;
         static unsigned int currentlyUsedProgramID;
         std::unordered_map<std::string, GLint> uniformLookup;
-        GLint getUniformLocation(const std::string &name);
 
     public:
         RenderShader(BasicShader const vertexShader, BasicShader const fragmentShader);
@@ -28,6 +27,8 @@ class RenderShader
         void setTransform(const std::string &name, glm::mat4 value);
         void setVec3(const std::string &name, glm::vec3 value);
         void setVec2(const std::string &name, glm::vec2 value);
+        void setTexture2D(const std::string &name, unsigned int textureUnit, unsigned int textureId);
+        GLint getUniformLocation(const std::string &name);
         unsigned int getProgramID() const;
 };
 

@@ -82,6 +82,16 @@ void RenderShader::setVec2(const std::string &name, glm::vec2 value)
     glUniform2fv(getUniformLocation(name), 1, glm::value_ptr(value));
 }
 
+void RenderShader::setTexture2D(const std::string &name, unsigned int textureUnit, unsigned int textureId)
+{
+    // set proper active texture unit 
+    glActiveTexture(GL_TEXTURE0 + textureUnit); 
+    // set sampler
+    glUniform1i(getUniformLocation((name).c_str()), textureUnit);
+    // bind the texture
+    glBindTexture(GL_TEXTURE_2D, textureId);
+}
+
 unsigned int RenderShader::getProgramID() const
 {
     return mProgramID;

@@ -4,6 +4,7 @@
 #include <memory>
 #include <stack>
 #include <functional>
+#include "render_params.hpp"
 #include "irender_object.hpp"
 #include "render_shader.hpp"
 
