@@ -8,11 +8,6 @@ class IBasicRenderer {
     // render to the output texture
     virtual void render() {}
 
-    // returns the texture this render renders to
-    unsigned int getTexture() {
-        return mTexture;
-    }
-
     // returns the frame buffer object
     unsigned int getFBO() {
         return mFBO;
@@ -27,7 +22,6 @@ class IBasicRenderer {
     virtual void clear() {}
 
     protected:
-        unsigned int mTexture;
         unsigned int mFBO;
         unsigned int mRBO;
         RenderParams &mRenderParams;
