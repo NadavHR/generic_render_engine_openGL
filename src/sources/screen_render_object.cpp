@@ -1,5 +1,8 @@
 #include "screen_render_object.hpp"
 
+unsigned int ScreenRenderObject::quadVAO = 0;
+unsigned int ScreenRenderObject::quadVBO = 0;
+
 void ScreenRenderObject::drawSquare()
 {
     glBindVertexArray(quadVAO);

@@ -14,14 +14,16 @@
 class RenderTargetGroup 
 {
 private:
-    std::function<void(RenderShader&, const RenderParams&)> mSetRenderSettings; 
+    std::function<void(RenderShader&, const RenderParams&)> mPreRender; 
+    std::function<void(RenderShader&, const RenderParams&)> mPostObjectRender;
     std::function<void(RenderShader&, const RenderParams&)> mPostRender; 
     RenderShader &mShader;
-    void drawAll();
+    void drawAll(RenderParams const &params);
     std::vector<std::shared_ptr<IRenderObject>> mRenderObjects;
     std::stack<size_t> mAvailableIndices;
     
 public:
+    RenderTargetGroup& operator=(RenderTargetGroup& other);
     /**adds a render object to the group 
      * @returns the unique index of the render object in the group
      */
@@ -46,12 +48,14 @@ public:
 
     /** constructs render target group
      *  @param shader the shader all render objects will be drawn with
-     *  @param setRenderSettings lambda expression that runs before rendering every frame, used to set uniforms and such
-     *  @param postRender lambda expression that runs after finishing rendering, used to set back settings that changed in `setRenderSettings` (if needed)
+     *  @param preRender lambda expression that runs before rendering every frame, used to set uniforms and such
+     *  @param postObjectRender runs every time we finish rendering an object
+     *  @param postRender lambda expression that runs after finishing rendering, used to set back settings that changed in `preRender` (if needed)
      */
     RenderTargetGroup(RenderShader &shader, 
-        std::function<void(RenderShader&, const RenderParams&)> setRenderSettings = [] (RenderShader& shader, const RenderParams& params) {},
-         std::function<void(RenderShader&, const RenderParams&)> postRender = [] (RenderShader& shader, const RenderParams& params) {} );
+        std::function<void(RenderShader&, const RenderParams&)> preRender = [] (RenderShader& shader, const RenderParams& params) {},
+        std::function<void(RenderShader&, const RenderParams&)> postObjectRender = [] (RenderShader& shader, const RenderParams& params) {},
+        std::function<void(RenderShader&, const RenderParams&)> postRender = [] (RenderShader& shader, const RenderParams& params) {} );
     ~RenderTargetGroup();
 };
 

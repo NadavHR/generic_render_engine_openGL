@@ -32,7 +32,7 @@ target_include_directories(generic_render_engine PUBLIC "src/" "src/classes/" "s
 add_custom_command(
         TARGET generic_render_engine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/src/game_assets/
+                ${CMAKE_SOURCE_DIR}/src/assets/
                 ${CMAKE_CURRENT_BINARY_DIR}/game_assets/)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

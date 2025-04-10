@@ -1,9 +1,9 @@
-#ifndef GBUFFER_RENDERER_HPP
-#define GBUFFER_RENDERER_HPP
+#ifndef GBUFFER_HPP
+#define GBUFFER_HPP
 #include <vector>
 #include "render_target_group.hpp"
-#include "ibasic_renderer.hpp"
-class GBufferRenderer : public IBasicRenderer {
+#include "iframe_buffer_object.hpp"
+class GBuffer : public IFrameBufferObject {
     private:
         std::vector<RenderTargetGroup*> mRenderTargets;  
         unsigned int mgPosition, mgNormal, mgAlbedoSpec; // deferred rendering buffers
@@ -13,9 +13,13 @@ class GBufferRenderer : public IBasicRenderer {
         unsigned int getNormalBuffer() { return mgNormal; }
         unsigned int getAlbedoSpecBuffer() { return mgAlbedoSpec; }
 
-        GBufferRenderer(RenderParams &renderParams);
+        // adds a render target group to be rendered by this renderer every frame
+        void addRenderTargetGroup(RenderTargetGroup * renderGroup);
+        // TODO: add the ability to check and edit the render groups  
+
+        GBuffer(const RenderParams &renderParams);
         void render() override;
         void clear() override;
 };
 
-#endif /* GBUFFER_RENDERER_HPP */
+#endif /* GBUFFER_HPP */

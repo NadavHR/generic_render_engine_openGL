@@ -1,6 +1,11 @@
-#include "gbuffer_renderer.hpp"
+#include "gbuffer.hpp"
 
-GBufferRenderer::GBufferRenderer(RenderParams &renderParams) : IBasicRenderer(renderParams)
+void GBuffer::addRenderTargetGroup(RenderTargetGroup *renderGroup)
+{
+    mRenderTargets.push_back(renderGroup);
+}
+
+GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferObject(renderParams)
 {
     #define GEN_TEXTURE(texture, attachment, RGBA_TYPE, data_type) \
     glGenTextures(1, &texture); \
@@ -26,12 +31,6 @@ GBufferRenderer::GBufferRenderer(RenderParams &renderParams) : IBasicRenderer(re
     unsigned int attachmentsG[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, attachmentsG);
 
-    // - depth buffer 
-    glGenRenderbuffers(1, &mRBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, mRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mRenderParams.screenWidth, mRenderParams.screenHeight);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mRBO);
-
     // make sure the frame buffer is complete
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "ERROR: Frame buffer incomplete" << std::endl;
@@ -40,10 +39,9 @@ GBufferRenderer::GBufferRenderer(RenderParams &renderParams) : IBasicRenderer(re
     // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void GBufferRenderer::render()
+void GBuffer::render()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, mRBO);
+    bind();
     // render
     // ------
     glEnable(GL_DEPTH_TEST); 
@@ -52,7 +50,7 @@ void GBufferRenderer::render()
     }
 }
 
-void GBufferRenderer::clear()
+void GBuffer::clear()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

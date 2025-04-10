@@ -1,23 +1,32 @@
 #include "render_target_group.hpp"
 
-RenderTargetGroup::RenderTargetGroup(RenderShader &shader, std::function<void(RenderShader&, const RenderParams&)> setRenderSettings,
-std::function<void(RenderShader&, const RenderParams&)> postRender) : mShader(shader)
+RenderTargetGroup::RenderTargetGroup(RenderShader &shader, std::function<void(RenderShader&, const RenderParams&)> preRender,
+std::function<void(RenderShader&, const RenderParams&)> postObjectRender,std::function<void(RenderShader&, const RenderParams&)> postRender) : mShader(shader)
 {
-    mSetRenderSettings = setRenderSettings;
+    mPreRender = preRender;
     mPostRender = postRender;
     mRenderObjects = std::vector<std::shared_ptr<IRenderObject>>();
     mAvailableIndices = std::stack<size_t>();
 }
 
-void RenderTargetGroup::drawAll()
+void RenderTargetGroup::drawAll(RenderParams const &params)
 {
     for (auto renderObject : mRenderObjects) {
         if (!(renderObject == NULL)) {
             if (renderObject->visible) {
                 renderObject->render(mShader);
+                mPostObjectRender(mShader, params);
             }
         }
     }
+}
+
+RenderTargetGroup &RenderTargetGroup::operator=(RenderTargetGroup &other)
+{
+    RenderTargetGroup copy(other.mShader, other.mPreRender, other.mPostObjectRender, other.mPostRender);
+    copy.mRenderObjects = other.mRenderObjects;
+    copy.mAvailableIndices = other.mAvailableIndices;
+    return copy;
 }
 
 size_t RenderTargetGroup::addRenderObject(std::shared_ptr<IRenderObject> renderObject)
@@ -52,8 +61,8 @@ std::shared_ptr<IRenderObject> RenderTargetGroup::getRenderObject(size_t index)
 void RenderTargetGroup::render(RenderParams const &params)
 {
     mShader.use();
-    mSetRenderSettings(mShader, params);
-    drawAll();
+    mPreRender(mShader, params);
+    drawAll(params);
     mPostRender(mShader, params);
 }
 
