@@ -3,7 +3,7 @@
 #include <vector>
 #include "render_target_group.hpp"
 #include "iframe_buffer_object.hpp"
-class GBuffer : public IFrameBufferObject {
+class GBuffer : public IFrameBufferRenderer {
     private:
         std::vector<RenderTargetGroup*> mRenderTargets;  
         unsigned int mgPosition, mgNormal, mgAlbedoSpec; // deferred rendering buffers

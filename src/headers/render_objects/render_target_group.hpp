@@ -56,6 +56,24 @@ public:
         std::function<void(RenderShader&, const RenderParams&)> preRender = [] (RenderShader& shader, const RenderParams& params) {},
         std::function<void(RenderShader&, const RenderParams&)> postObjectRender = [] (RenderShader& shader, const RenderParams& params) {},
         std::function<void(RenderShader&, const RenderParams&)> postRender = [] (RenderShader& shader, const RenderParams& params) {} );
+
+    /** sets the pre render function
+     * @param preRender lambda expression that runs before rendering every frame, used to set uniforms and such
+     */
+    void setPreRenderFunction(std::function<void(RenderShader&, const RenderParams&)> preRender);
+
+    /** sets the post render function
+     * @param postRender lambda expression that runs after finishing rendering, used to set back settings that changed in `preRender` (if needed)
+     */
+    void setPostRenderFunction(std::function<void(RenderShader&, const RenderParams&)> postRender);
+
+      /** sets the post object render function
+     * @param postObjectRender runs every time we finish rendering an object
+     */
+    void setPostObjectRenderFunction(std::function<void(RenderShader&, const RenderParams&)> postObjectRender);
+
+
+
     ~RenderTargetGroup();
 };
 

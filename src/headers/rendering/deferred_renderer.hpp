@@ -4,7 +4,7 @@
 #include "deferred_point_light.hpp"
 #include <vector>
 
-class DeferredRenderer : public IFrameBufferObject {
+class DeferredRenderer : public IFrameBufferRenderer {
     private:
         std::vector<DeferredPointLight *> mLights;
     public:

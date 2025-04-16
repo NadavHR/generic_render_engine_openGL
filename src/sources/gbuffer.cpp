@@ -5,7 +5,7 @@ void GBuffer::addRenderTargetGroup(RenderTargetGroup *renderGroup)
     mRenderTargets.push_back(renderGroup);
 }
 
-GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferObject(renderParams)
+GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(renderParams)
 {
     #define GEN_TEXTURE(texture, attachment, RGBA_TYPE, data_type) \
     glGenTextures(1, &texture); \

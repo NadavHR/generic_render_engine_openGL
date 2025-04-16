@@ -9,6 +9,21 @@ std::function<void(RenderShader&, const RenderParams&)> postObjectRender,std::fu
     mAvailableIndices = std::stack<size_t>();
 }
 
+void RenderTargetGroup::setPreRenderFunction(std::function<void(RenderShader &, const RenderParams &)> preRender)
+{
+    mPreRender = preRender;
+}
+
+void RenderTargetGroup::setPostRenderFunction(std::function<void(RenderShader &, const RenderParams &)> postRender)
+{
+    mPostRender = postRender;
+}
+
+void RenderTargetGroup::setPostObjectRenderFunction(std::function<void(RenderShader &, const RenderParams &)> postObjectRender)
+{
+    mPostObjectRender = postObjectRender;
+}
+
 void RenderTargetGroup::drawAll(RenderParams const &params)
 {
     for (auto renderObject : mRenderObjects) {

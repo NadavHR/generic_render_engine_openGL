@@ -1,10 +1,11 @@
 #include "ping_pong_buffer_renderer.hpp"
 
-PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, const RenderParams &params, const unsigned int originalTexture, const unsigned int textures[2], const std::function<void()> renderFunction1, const std::function<void()> renderFunction2)
+PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, const RenderParams &params, const unsigned int originalTexture, const unsigned int textures[2], const std::function<void()> renderFunction1, const std::function<void()> renderFunction2, uint8_t iters)
                                                  : mParams(params), 
                                                 mBuffers{PingPongBuffer(params, renderFunction1, textures[0], textures[1]),
                                                         PingPongBuffer(params, renderFunction2, textures[1], textures[0])}, mRenderTargetGroup(targetGroup)
 {
+    mIterations = iters;
     mOriginalTexture = originalTexture;
     mAction1 = renderFunction1;
     mAction2 = renderFunction2;
@@ -23,18 +24,31 @@ void PingPongBufferRenderer::setOutputTexture(unsigned int outputTexture)
 
 void PingPongBufferRenderer::render()
 {
+    // this is static in hopes the compiler will realize the lambdas can be optimized as they dont use values that only exist on the stack
+    static bool onWhichBuffer = 0;
+    onWhichBuffer = 0; // sets it to 0 bc we cant rely on it being 0 on start
     glDisable(GL_DEPTH_TEST); 
-    bool onWhich = 0;
 
+    // sets the first buffers render function to first read from the the original texture and then switch to the second buffers texture 
+    mBuffers[0].setReadTexture(mOriginalTexture);
+    mBuffers[0].setRenderFunction([&] () {
+        mAction1();
+        mBuffers[0].setReadTexture(mTextures[1]);
+        mBuffers[0].setRenderFunction(mAction1);
+    });
+
+    // after every object render, run the buffer's render function and than switch buffer 
+    mRenderTargetGroup.setPostObjectRenderFunction([&] (RenderShader& shader, const RenderParams& params) {
+        mBuffers[onWhichBuffer].render();
+        onWhichBuffer = (onWhichBuffer + 1) % 2; // switches buffer
+        mBuffers[onWhichBuffer].bind();
+    });
+
+    mBuffers[0].bind(); // make sure the correct buffer is bound at the start
     for (uint8_t i = 0; i < mIterations; i++) {
-        
+        mRenderTargetGroup.render(mParams);
     }
-    glDisable(GL_DEPTH_TEST);
-}
-
-void PingPongBufferRenderer::setIters(uint8_t iters)
-{
-    mIterations = iters;
+    glEnable(GL_DEPTH_TEST);
 }
 
 void PingPongBufferRenderer::setRenderTargetGroup(RenderTargetGroup renderGroup)
@@ -50,7 +64,6 @@ void PingPongBuffer::bind()
 
 void PingPongBuffer::render()
 {
-    bind();
     mRenderFunction();
 }
 
@@ -64,7 +77,7 @@ void PingPongBuffer::setRenderFunction(const std::function<void()> renderFunctio
     mRenderFunction = renderFunction;
 }
 
-PingPongBuffer::PingPongBuffer(const RenderParams &params, const std::function<void()> renderFunction, const unsigned int writeTexture, const unsigned int readTexture) : IFrameBufferObject(params)
+PingPongBuffer::PingPongBuffer(const RenderParams &params, const std::function<void()> renderFunction, const unsigned int writeTexture, const unsigned int readTexture) : IFrameBufferRenderer(params)
 {
     mRenderFunction = renderFunction;
 
