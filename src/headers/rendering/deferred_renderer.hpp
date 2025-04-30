@@ -2,10 +2,12 @@
 #define DEFERRED_RENDERER_HPP
 #include "iframe_buffer_object.hpp"
 #include "deferred_point_light.hpp"
+#include "ping_pong_buffer_renderer.hpp"
 #include <vector>
 
-class DeferredRenderer : public IFrameBufferRenderer {
+class DeferredRenderer : public IRenderer {
     private:
+        PingPongBufferRenderer mPingPongRenderer;
         std::vector<DeferredPointLight *> mLights;
     public:
         DeferredRenderer(RenderParams &renderParams);

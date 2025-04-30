@@ -9,24 +9,16 @@ PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, co
     mOriginalTexture = originalTexture;
     mAction1 = renderFunction1;
     mAction2 = renderFunction2;
-    mOutputTexture = originalTexture;
 }
 
 unsigned int PingPongBufferRenderer::getOutputTexture()
 {
-    return mOutputTexture;
-}
-
-void PingPongBufferRenderer::setOutputTexture(unsigned int outputTexture)
-{
-    mOutputTexture = outputTexture;
+    return mTextures[(mOnWhichBuffer + 1) % 2]; 
 }
 
 void PingPongBufferRenderer::render()
 {
-    // this is static in hopes the compiler will realize the lambdas can be optimized as they dont use values that only exist on the stack
-    static bool onWhichBuffer = 0;
-    onWhichBuffer = 0; // sets it to 0 bc we cant rely on it being 0 on start
+    mOnWhichBuffer = 0; // sets it to 0 bc we cant rely on it being 0 on start
     glDisable(GL_DEPTH_TEST); 
 
     // sets the first buffers render function to first read from the the original texture and then switch to the second buffers texture 
@@ -39,21 +31,27 @@ void PingPongBufferRenderer::render()
 
     // after every object render, run the buffer's render function and than switch buffer 
     mRenderTargetGroup.setPostObjectRenderFunction([&] (RenderShader& shader, const RenderParams& params) {
-        mBuffers[onWhichBuffer].render();
-        onWhichBuffer = (onWhichBuffer + 1) % 2; // switches buffer
-        mBuffers[onWhichBuffer].bind();
+        mBuffers[mOnWhichBuffer].render();
+        mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer
+        mBuffers[mOnWhichBuffer].bind();
     });
 
     mBuffers[0].bind(); // make sure the correct buffer is bound at the start
     for (uint8_t i = 0; i < mIterations; i++) {
         mRenderTargetGroup.render(mParams);
     }
+    
     glEnable(GL_DEPTH_TEST);
 }
 
 void PingPongBufferRenderer::setRenderTargetGroup(RenderTargetGroup renderGroup)
 {
     mRenderTargetGroup = renderGroup;
+}
+
+void PingPongBufferRenderer::setIterations(uint8_t iterations)
+{
+    mIterations = iterations;
 }
 
 void PingPongBuffer::bind()
