@@ -2,7 +2,7 @@
 #define GBUFFER_HPP
 #include <vector>
 #include "render_target_group.hpp"
-#include "iframe_buffer_object.hpp"
+#include "frame_buffer_object.hpp"
 class GBuffer : public IFrameBufferRenderer {
     private:
         std::vector<RenderTargetGroup*> mRenderTargets;  

@@ -28,7 +28,7 @@ void RenderTargetGroup::drawAll(RenderParams const &params)
 {
     for (auto renderObject : mRenderObjects) {
         if (!(renderObject == NULL)) {
-            if (renderObject->visible) {
+            if (renderObject->shouldRender()) {
                 renderObject->render(mShader);
                 mPostObjectRender(mShader, params);
             }

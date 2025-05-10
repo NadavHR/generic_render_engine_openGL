@@ -1,6 +1,6 @@
 #ifndef PING_PONG_BUFFER_RENDERER_HPP
 #define PING_PONG_BUFFER_RENDERER_HPP
-#include "iframe_buffer_object.hpp"
+#include "frame_buffer_object.hpp"
 #include "render_target_group.hpp"
 #include <functional>
 #include <iostream>
@@ -56,6 +56,8 @@ class PingPongBufferRenderer : public IRenderer
         void render() override;
         // sets the render target group (copies it)
         void setRenderTargetGroup(RenderTargetGroup renderGroup);
+        // adds a render object to be drawn by this renderer
+        void addRenderObject(std::shared_ptr<IRenderObject> renderObject);
         // sets how many iterations of the action will run (how many times targetGroup.render() will run)
         void setIterations(uint8_t iterations);
 };  

@@ -49,6 +49,11 @@ void PingPongBufferRenderer::setRenderTargetGroup(RenderTargetGroup renderGroup)
     mRenderTargetGroup = renderGroup;
 }
 
+void PingPongBufferRenderer::addRenderObject(std::shared_ptr<IRenderObject> renderObject)
+{
+    mRenderTargetGroup.addRenderObject(renderObject);
+}
+
 void PingPongBufferRenderer::setIterations(uint8_t iterations)
 {
     mIterations = iterations;
@@ -56,7 +61,7 @@ void PingPongBufferRenderer::setIterations(uint8_t iterations)
 
 void PingPongBuffer::bind()
 {
-    IFrameBufferObject::bind();
+    FrameBufferObject::bind();
     glBindTexture(GL_TEXTURE_2D, mReadTexture); 
 }
 
@@ -81,7 +86,6 @@ PingPongBuffer::PingPongBuffer(const RenderParams &params, const std::function<v
 
     mReadTexture = readTexture;
 
-    glGenFramebuffers(1, &mFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 
     // attach texture to frame buffer

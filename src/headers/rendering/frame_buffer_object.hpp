@@ -1,11 +1,17 @@
-#ifndef IFRAME_BUFFER_OBJECT_HPP
-#define IFRAME_BUFFER_OBJECT_HPP
+#ifndef FRAME_BUFFER_OBJECT_HPP
+#define FRAME_BUFFER_OBJECT_HPP
 #include "render_params.hpp"
 #include "irenderer.hpp"
 #include <glad/glad.h>
 
+unsigned int createFrameBuffer() {
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    return fbo;
+}
+
 // this class represents a basic frame buffer object, you need to provide attachments yourself in child classes
-class IFrameBufferObject {
+class FrameBufferObject {
     public:
 
     // binds this renderer 
@@ -21,20 +27,22 @@ class IFrameBufferObject {
     // clears the buffers used by this renderer
     virtual void clear() {}
 
+    FrameBufferObject(const RenderParams &renderParams) : mRenderParams(renderParams), mFBO(createFrameBuffer()) {}
+    ~FrameBufferObject() { glDeleteFramebuffers(1, &mFBO); }
+
     protected:
-        unsigned int mFBO;
+        const unsigned int mFBO;
         const RenderParams &mRenderParams;
-        IFrameBufferObject(const RenderParams &renderParams) : mRenderParams(renderParams) {}
 
 };
 
-class IFrameBufferRenderer : public IFrameBufferObject, public IRenderer {
+class IFrameBufferRenderer : public FrameBufferObject, public IRenderer {
     public:
         // this function is used to write everything to whatever the attachment is (sometimes not much is needed for that but its better to have it than to not)
         virtual void render() override {}
     protected:
-        IFrameBufferRenderer(const RenderParams &renderParams) : IFrameBufferObject(renderParams) {}
+        IFrameBufferRenderer(const RenderParams &renderParams) : FrameBufferObject(renderParams) {}
 };
 
 
-#endif /* IFRAME_BUFFER_OBJECT_HPP */
+#endif /* FRAME_BUFFER_OBJECT_HPP */

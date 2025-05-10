@@ -15,7 +15,6 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); \
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT##attachment, GL_TEXTURE_2D, texture, 0);
 
-    glGenFramebuffers(1, &mFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 
     // - normal color buffer

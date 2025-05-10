@@ -1,16 +1,22 @@
 #ifndef DEFERRED_RENDERER_HPP
 #define DEFERRED_RENDERER_HPP
-#include "iframe_buffer_object.hpp"
+#include "frame_buffer_object.hpp"
 #include "deferred_point_light.hpp"
 #include "ping_pong_buffer_renderer.hpp"
+#include "gbuffer.hpp"
 #include <vector>
 
 class DeferredRenderer : public IRenderer {
     private:
         PingPongBufferRenderer mPingPongRenderer;
-        std::vector<DeferredPointLight *> mLights;
+        GBuffer mBGuffer;
+
+        std::vector<std::shared_ptr<DeferredPointLight>> mLights;
     public:
         DeferredRenderer(RenderParams &renderParams);
+        ~DeferredRenderer();
+
+        void addPointLight(std::shared_ptr<DeferredPointLight> pointLight);
         // strength of ambient light
         float ambientStrength;
         // color of ambient light
