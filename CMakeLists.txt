@@ -26,14 +26,21 @@ target_link_libraries(generic_render_engine PRIVATE glad::glad)
 target_link_libraries(generic_render_engine PRIVATE glm::glm-header-only)
 target_link_libraries(generic_render_engine PRIVATE assimp::assimp)
 
-target_include_directories(generic_render_engine PUBLIC "src/" "src/classes/" "src/headers/" "src/headers/render_objects/" "src/headers/rendering/" "src/headers/shading/")
+target_include_directories(generic_render_engine PUBLIC 
+        "src/" 
+        "src/classes/" 
+        "src/headers/" 
+        "src/headers/render_objects/" 
+        "src/headers/rendering/" 
+        "src/headers/shading/" 
+        "src/headers/shading/shaders")
 
 
 add_custom_command(
         TARGET generic_render_engine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_SOURCE_DIR}/src/assets/
-                ${CMAKE_CURRENT_BINARY_DIR}/game_assets/)
+                ${CMAKE_CURRENT_BINARY_DIR}/assets/)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

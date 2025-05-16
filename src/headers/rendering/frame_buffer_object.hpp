@@ -4,7 +4,7 @@
 #include "irenderer.hpp"
 #include <glad/glad.h>
 
-unsigned int createFrameBuffer() {
+inline unsigned int createFrameBuffer() {
     unsigned int fbo;
     glGenFramebuffers(1, &fbo);
     return fbo;
