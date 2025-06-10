@@ -38,6 +38,14 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
     // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+GBuffer::~GBuffer()
+{
+    glDeleteBuffers(1, &mFBO);
+    glDeleteTextures(1, &mgPosition);
+    glDeleteTextures(1, &mgAlbedoSpec);
+    glDeleteTextures(1, &mgNormal);
+}
+
 void GBuffer::render()
 {
     bind();
@@ -49,7 +57,7 @@ void GBuffer::render()
     }
 }
 
-void GBuffer::clear()
+void GBuffer::clear() const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

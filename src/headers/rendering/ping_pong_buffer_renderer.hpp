@@ -11,7 +11,7 @@ class PingPongBufferRenderer;
 class PingPongBuffer : public IFrameBufferRenderer {
     friend PingPongBufferRenderer;
     public:
-        void bind() override;
+        void bind() const override;
         void render() override;
         void setReadTexture(unsigned int readTexture);
         void setRenderFunction(const std::function<void()> renderFunction);
@@ -44,7 +44,7 @@ class PingPongBufferRenderer : public IRenderer
          * @param renderFunction2 the rendering function of buffer 2 (usually the same as buffer 1)
          * @param iters the ammount of iterations it should run (how many times targetGroup.render() will run)
          */
-        PingPongBufferRenderer(RenderTargetGroup targetGroup, const RenderParams &params, const unsigned int originalTexture, const unsigned int textures[2], const std::function<void()> renderFunction1, const std::function<void()> renderFunction2, uint8_t iters = 1 );
+        PingPongBufferRenderer(RenderTargetGroup targetGroup, const RenderParams &params, const unsigned int originalTexture, const unsigned int textures[2], const std::function<void()> renderFunction1 = [] () {}, const std::function<void()> renderFunction2 = [] () {}, uint8_t iters = 1 );
         /**returns the output texture (use after running `render()`)
          *  
          * this function returns the identifier of the texture last written to by the renderer.

@@ -12,7 +12,7 @@ class BasicShader {
          * @param pathToShader the path to the shader program source code
          * @param shaderType determines which part of the render pipeline this shader will take (GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, etc)
          */
-        BasicShader(char * const pathToShader, int shaderType);
+        BasicShader(char * const pathToShader, GLenum shaderType);
         ~BasicShader();
 
         // links the shader to a program

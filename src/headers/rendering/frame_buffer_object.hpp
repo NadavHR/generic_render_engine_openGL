@@ -15,17 +15,17 @@ class FrameBufferObject {
     public:
 
     // binds this renderer 
-    virtual void bind() {
+    virtual void bind() const {
         glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
     }
 
     // returns the frame buffer object
-    unsigned int getFBO() {
+    unsigned int getFBO() const {
         return mFBO;
     }
 
     // clears the buffers used by this renderer
-    virtual void clear() {}
+    virtual void clear() const {}
 
     FrameBufferObject(const RenderParams &renderParams) : mRenderParams(renderParams), mFBO(createFrameBuffer()) {}
     ~FrameBufferObject() { glDeleteFramebuffers(1, &mFBO); }

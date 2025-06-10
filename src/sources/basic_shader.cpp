@@ -17,12 +17,11 @@ char * openRawSource(std::string fileName) {
     return out;
 }
 
-BasicShader::BasicShader(char *const pathToShader, int shaderType){
-    const char * shaderSource = openRawSource(pathToShader);
+BasicShader::BasicShader(char *const pathToShader, GLenum shaderType){
+    char * shaderSource = openRawSource(pathToShader);
 
     int success;
     char infoLog[512];
-
     mCompiledID = glCreateShader(shaderType);
     glShaderSource(mCompiledID, 1, &shaderSource, NULL);
     glCompileShader(mCompiledID);
@@ -33,7 +32,7 @@ BasicShader::BasicShader(char *const pathToShader, int shaderType){
         glGetShaderInfoLog(mCompiledID, 512, NULL, infoLog);
         std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
     };
-
+    free(shaderSource);
 }
 
 BasicShader::~BasicShader(){

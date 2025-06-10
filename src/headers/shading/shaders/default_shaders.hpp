@@ -5,13 +5,9 @@
 #define PATH_TO_SHADER(shader) ("/assets/shaders/" shader)
 
 namespace DefaultShaders {
-    RenderShader defferedPointLight;
+    extern RenderShader *defferedPointLight;
 
-    void initializeShaders() {
-        BasicShader noChangesVertex(PATH_TO_SHADER("no_changes.vs"), GL_VERTEX_SHADER);
-        BasicShader defferedPointLightFragment(PATH_TO_SHADER("deffered_point_light.fs"), GL_FRAGMENT_SHADER);
-        defferedPointLight = RenderShader(noChangesVertex, defferedPointLightFragment);
-    }
+    void initializeShaders();
 }
 
 #endif /* DEFAULT_SHADERS_HPP */

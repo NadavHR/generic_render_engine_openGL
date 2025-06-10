@@ -59,7 +59,7 @@ void PingPongBufferRenderer::setIterations(uint8_t iterations)
     mIterations = iterations;
 }
 
-void PingPongBuffer::bind()
+void PingPongBuffer::bind() const 
 {
     FrameBufferObject::bind();
     glBindTexture(GL_TEXTURE_2D, mReadTexture); 

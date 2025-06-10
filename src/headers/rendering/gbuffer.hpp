@@ -18,8 +18,9 @@ class GBuffer : public IFrameBufferRenderer {
         // TODO: add the ability to check and edit the render groups  
 
         GBuffer(const RenderParams &renderParams);
+        ~GBuffer();
         void render() override;
-        void clear() override;
+        void clear() const override;
 };
 
 #endif /* GBUFFER_HPP */

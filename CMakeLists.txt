@@ -12,8 +12,6 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp CONFIG REQUIRED)
 
-
-
 file(GLOB_RECURSE PROJECT_SOURCES "src/*.hpp" "src/*.cpp")
 
 # set(PROJECT_SOURCES "src/classes" "src/headers" "src")
@@ -35,12 +33,23 @@ target_include_directories(generic_render_engine PUBLIC
         "src/headers/shading/" 
         "src/headers/shading/shaders")
 
+# Set preprocessor definitions and output directories based on build type
+target_compile_definitions(generic_render_engine PRIVATE 
+    $<$<CONFIG:Debug>:DEBUG_BUILD>
+    $<$<CONFIG:Release>:NDEBUG>
+)
+
+set_target_properties(generic_render_engine PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/bin/Debug"
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release"
+)
 
 add_custom_command(
         TARGET generic_render_engine POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
                 ${CMAKE_SOURCE_DIR}/src/assets/
-                ${CMAKE_CURRENT_BINARY_DIR}/assets/)
+                $<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/Debug/assets,${CMAKE_BINARY_DIR}/bin/Release/assets>
+)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

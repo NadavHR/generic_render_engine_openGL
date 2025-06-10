@@ -1,11 +1,13 @@
 #include "render_target_group.hpp"
 
-RenderTargetGroup::RenderTargetGroup(RenderShader &shader, std::function<void(RenderShader&, const RenderParams&)> preRender,
-std::function<void(RenderShader&, const RenderParams&)> postObjectRender,std::function<void(RenderShader&, const RenderParams&)> postRender) : mShader(shader)
+RenderTargetGroup::RenderTargetGroup(RenderShader &shader, std::vector<std::shared_ptr<IRenderObject>> renderObjects,
+    std::function<void(RenderShader&, const RenderParams&)> preRender,
+    std::function<void(RenderShader&, const RenderParams&)> postObjectRender,
+    std::function<void(RenderShader&, const RenderParams&)> postRender
+) : mShader(shader), mRenderObjects(renderObjects)
 {
     mPreRender = preRender;
     mPostRender = postRender;
-    mRenderObjects = std::vector<std::shared_ptr<IRenderObject>>();
     mAvailableIndices = std::stack<size_t>();
 }
 
@@ -38,7 +40,7 @@ void RenderTargetGroup::drawAll(RenderParams const &params)
 
 RenderTargetGroup &RenderTargetGroup::operator=(RenderTargetGroup &other)
 {
-    RenderTargetGroup copy(other.mShader, other.mPreRender, other.mPostObjectRender, other.mPostRender);
+    RenderTargetGroup copy(other.mShader, other.mRenderObjects, other.mPreRender, other.mPostObjectRender, other.mPostRender);
     copy.mRenderObjects = other.mRenderObjects;
     copy.mAvailableIndices = other.mAvailableIndices;
     return copy;

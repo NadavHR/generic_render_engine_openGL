@@ -22,7 +22,7 @@
 #include "render_params.hpp"
 #include "input.hpp"
 #include "timing.hpp"
-
+#include "default_shaders.hpp"
 
 using namespace std;
 
@@ -45,6 +45,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    DefaultShaders::initializeShaders();
     renderParams->screenWidth = 900;
     renderParams->screenHeight = 500;
     

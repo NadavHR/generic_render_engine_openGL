@@ -48,14 +48,15 @@ public:
 
     /** constructs render target group
      *  @param shader the shader all render objects will be drawn with
+     *  @param renderObjects this is a vector that contains all of the render objects
      *  @param preRender lambda expression that runs before rendering every frame, used to set uniforms and such
      *  @param postObjectRender runs every time we finish rendering an object
      *  @param postRender lambda expression that runs after finishing rendering, used to set back settings that changed in `preRender` (if needed)
-     */
-    RenderTargetGroup(RenderShader &shader, 
+    */
+    RenderTargetGroup(RenderShader &shader, std::vector<std::shared_ptr<IRenderObject>> renderObjects = std::vector<std::shared_ptr<IRenderObject>>(),
         std::function<void(RenderShader&, const RenderParams&)> preRender = [] (RenderShader& shader, const RenderParams& params) {},
         std::function<void(RenderShader&, const RenderParams&)> postObjectRender = [] (RenderShader& shader, const RenderParams& params) {},
-        std::function<void(RenderShader&, const RenderParams&)> postRender = [] (RenderShader& shader, const RenderParams& params) {} );
+        std::function<void(RenderShader&, const RenderParams&)> postRender = [] (RenderShader& shader, const RenderParams& params) {});
 
     /** sets the pre render function
      * @param preRender lambda expression that runs before rendering every frame, used to set uniforms and such
