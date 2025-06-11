@@ -23,7 +23,7 @@ private:
     std::stack<size_t> mAvailableIndices;
     
 public:
-    RenderTargetGroup& operator=(RenderTargetGroup& other);
+    RenderTargetGroup &operator=(RenderTargetGroup& other);
     /**adds a render object to the group 
      * @returns the unique index of the render object in the group
      */

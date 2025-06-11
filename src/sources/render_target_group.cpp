@@ -40,10 +40,7 @@ void RenderTargetGroup::drawAll(RenderParams const &params)
 
 RenderTargetGroup &RenderTargetGroup::operator=(RenderTargetGroup &other)
 {
-    RenderTargetGroup copy(other.mShader, other.mRenderObjects, other.mPreRender, other.mPostObjectRender, other.mPostRender);
-    copy.mRenderObjects = other.mRenderObjects;
-    copy.mAvailableIndices = other.mAvailableIndices;
-    return copy;
+    return other;
 }
 
 size_t RenderTargetGroup::addRenderObject(std::shared_ptr<IRenderObject> renderObject)
