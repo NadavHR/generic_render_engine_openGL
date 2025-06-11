@@ -30,6 +30,13 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
     unsigned int attachmentsG[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, attachmentsG);
 
+    // - depth buffer used for depth testing
+    glGenRenderbuffers(1, &mDepthRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, mDepthRBO); 
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mRenderParams.screenWidth, mRenderParams.screenHeight);  
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthRBO);
+
     // make sure the frame buffer is complete
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "ERROR: Frame buffer incomplete" << std::endl;
@@ -41,12 +48,13 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
 GBuffer::~GBuffer()
 {
     glDeleteBuffers(1, &mFBO);
+    glDeleteRenderbuffers(1, &mDepthRBO);
     glDeleteTextures(1, &mgPosition);
     glDeleteTextures(1, &mgAlbedoSpec);
     glDeleteTextures(1, &mgNormal);
 }
 
-void GBuffer::render()
+void GBuffer::render() 
 {
     bind();
     // render
@@ -62,5 +70,5 @@ void GBuffer::clear() const
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
