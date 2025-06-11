@@ -53,3 +53,8 @@ void DeferredRenderer::addPointLight(std::shared_ptr<DeferredPointLight> pointLi
 {
     mPointLightsTargetGroup.addRenderObject(pointLight);
 }
+
+void DeferredRenderer::addRenderTargetGroup(RenderTargetGroup &targetGroup)
+{
+    mGBuffer.addRenderTargetGroup(&targetGroup);
+}

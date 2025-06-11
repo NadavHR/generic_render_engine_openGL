@@ -33,6 +33,7 @@ class DeferredRenderer : public IRenderer {
         unsigned int getOutputHDRTexture();
 
         void addPointLight(std::shared_ptr<DeferredPointLight> pointLight);
+        void addRenderTargetGroup(RenderTargetGroup &targetGroup);
         // strength of ambient light
         float ambientStrength;
         // color of ambient light
