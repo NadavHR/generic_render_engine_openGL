@@ -6,7 +6,7 @@
 
 namespace DefaultShaders {
     extern RenderShader *defferedPointLight;
-
+    extern RenderShader *modelRenderDeferredHDR;
     void initializeShaders();
 }
 
