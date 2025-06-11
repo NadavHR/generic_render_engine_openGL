@@ -23,12 +23,19 @@ class RenderShader
         void use();
         bool isCurrentlyUsed() const;
         // utility uniform functions
+        
         void setBool(const std::string &name, bool value);  
         void setInt(const std::string &name, int value);  
         void setFloat(const std::string &name, float value);
         void setTransform(const std::string &name, glm::mat4 value);
         void setVec3(const std::string &name, glm::vec3 value);
         void setVec2(const std::string &name, glm::vec2 value);
+
+        /** this function binds a texture to a texture unit and binds it to a texture uniform
+         *  @param name the name of the uniform
+         *  @param textureUnit this is the unit to bind the texture to, if you want to bind multiple textures use multiple different units (0, 1, 2, ...)
+         *  @param textureId the id of the texture
+         */
         void setTexture2D(const std::string &name, unsigned int textureUnit, unsigned int textureId);
         GLint getUniformLocation(const std::string &name);
         unsigned int getProgramID() const;
