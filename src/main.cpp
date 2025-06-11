@@ -45,7 +45,7 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    DefaultShaders::initializeShaders();
+    
     renderParams->screenWidth = 900;
     renderParams->screenHeight = 500;
     
@@ -76,11 +76,9 @@ int main()
     glEnable(GL_STENCIL_TEST);    
     glEnable(GL_CULL_FACE);  
 
-    // set up vertex data (and buffer(s)) and configure vertex attributes
+    // finished setting up OpenGL API, anything that uses it should be passed this point
     // ------------------------------------------------------------------
-
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    // stbi_set_flip_vertically_on_load(true);
+    DefaultShaders::initializeShaders();
 
     // transformation
     glm::mat4 projection = renderParams->getProjectionMatrix();
