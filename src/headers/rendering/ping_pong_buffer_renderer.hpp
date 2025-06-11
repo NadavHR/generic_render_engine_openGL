@@ -15,6 +15,7 @@ class PingPongBuffer : public IFrameBufferRenderer {
         void render() override;
         void setReadTexture(unsigned int readTexture);
         void setRenderFunction(const std::function<void()> renderFunction);
+        void clear() const;
     private:
         unsigned int mWriteTexture, mReadTexture;
         std::function<void()> mRenderFunction;
@@ -54,6 +55,8 @@ class PingPongBufferRenderer : public IRenderer
         unsigned int getOutputTexture();
         // renders to the output texture (if no output texture was set it defaults to the original texture)
         void render() override;
+        // clears both textures
+        void clear() const;
         // sets the render target group (copies it)
         void setRenderTargetGroup(RenderTargetGroup renderGroup);
         // adds a render object to be drawn by this renderer

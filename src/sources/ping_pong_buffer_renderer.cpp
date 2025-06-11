@@ -44,6 +44,11 @@ void PingPongBufferRenderer::render()
     glEnable(GL_DEPTH_TEST);
 }
 
+void PingPongBufferRenderer::clear() const {
+    mBuffers[0].clear();
+    mBuffers[1].clear();
+}
+
 void PingPongBufferRenderer::setRenderTargetGroup(RenderTargetGroup renderGroup)
 {
     mRenderTargetGroup = renderGroup;
@@ -68,6 +73,13 @@ void PingPongBuffer::bind() const
 void PingPongBuffer::render()
 {
     mRenderFunction();
+}
+
+void PingPongBuffer::clear() const {
+    glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void PingPongBuffer::setReadTexture(unsigned int readTexture)
