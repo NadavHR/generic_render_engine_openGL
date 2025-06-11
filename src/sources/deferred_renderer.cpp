@@ -40,7 +40,7 @@ void DeferredRenderer::render() {
 }
 
 void DeferredRenderer::clear() const {
-
+    mPingPongRenderer.clear();
 }
 
 unsigned int DeferredRenderer::getOutputHDRTexture()
