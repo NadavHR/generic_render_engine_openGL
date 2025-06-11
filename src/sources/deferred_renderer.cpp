@@ -37,6 +37,7 @@ void DeferredRenderer::render() {
     shader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 0, mGBuffer.getAlbedoSpecBuffer());
     shader.setTexture2D(G_NORMAL_UNIFORM, 1, mGBuffer.getNormalBuffer());
     shader.setTexture2D(G_POSITION_UNIFORM, 2, mGBuffer.getPositionBuffer());
+    mPingPongRenderer.render();
 }
 
 void DeferredRenderer::clear() const {
