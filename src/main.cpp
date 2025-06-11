@@ -23,6 +23,8 @@
 #include "input.hpp"
 #include "timing.hpp"
 #include "default_shaders.hpp"
+#include "deferred_renderer.hpp"
+#include "model_render_object.hpp"
 
 using namespace std;
 
@@ -34,7 +36,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 bool firstMouse = true;
 glm::vec2 mousePosition;
 float deltaTimeSec = 0;
-RenderParams * renderParams = new RenderParams();
+RenderParams renderParams;
 
 int main()
 {
@@ -46,13 +48,13 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    renderParams->screenWidth = 900;
-    renderParams->screenHeight = 500;
+    renderParams.screenWidth = 900;
+    renderParams.screenHeight = 500;
     
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(renderParams->screenWidth, renderParams->screenHeight, "Render Engine", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(renderParams.screenWidth, renderParams.screenHeight, "Render Engine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -76,22 +78,44 @@ int main()
     glEnable(GL_STENCIL_TEST);    
     glEnable(GL_CULL_FACE);  
 
-    // finished setting up OpenGL API, anything that uses it should be passed this point
+    // finished setting up OpenGL API this part is where we run everything that must run first
     // ------------------------------------------------------------------
     DefaultShaders::initializeShaders();
 
+    // here we define everything we need such as renderers
+    // ------------------------------------------------------------------ 
+    DeferredRenderer deferredRenderer(renderParams);
+
+    // test ---------------------------------------------------------
+    Model testModel("/assets/models/asteroid/asteroid.gltf");
+    glm::vec3 testPosition = glm::vec3(0, 0, -1);    
+    glm::vec3 testRotation = glm::vec3(0, 0, 0);
+    glm::vec3 testScale = glm::vec3(1, 1, 1);
+    glm::vec3 testColor = glm::vec3(1, 1, 1);
+    float testLinear = 1.0f;
+    float testQuadratic = 1.0f;
+    float testThreshold = 1.0f; 
+    std::shared_ptr<ModelRenderObject> testModelRenderObject = std::shared_ptr<ModelRenderObject>(new ModelRenderObject(testModel, testPosition, testRotation, testScale));
+    std::shared_ptr<DeferredPointLight> testPointLight = std::shared_ptr<DeferredPointLight>(new DeferredPointLight(testPosition, testColor, testLinear, testQuadratic, testThreshold));
+
+    RenderTargetGroup testTargetGroup(*DefaultShaders::modelRenderDeferredHDR);
+    testTargetGroup.addRenderObject(testModelRenderObject);
+    deferredRenderer.addRenderTargetGroup(testTargetGroup);
+    deferredRenderer.addPointLight(testPointLight);
+    // test ---------------------------------------------------------
+
     // transformation
-    glm::mat4 projection = renderParams->getProjectionMatrix();
+    glm::mat4 projection = renderParams.getProjectionMatrix();
     // render loop
     // -----------    
-    float lastFrameSec = static_cast<float>(glfwGetTime());
+    long lastFrameSec = static_cast<float>(glfwGetTime());
 
     while (!glfwWindowShouldClose(window))
     {
         glEnable(GL_DEPTH_TEST);  // enable depth test
         // renderer.clear(); 
-        float currentFrameSec = static_cast<float>(glfwGetTime());
-        deltaTimeSec = currentFrameSec - lastFrameSec;
+        long currentFrameSec = glfwGetTime();
+        deltaTimeSec = static_cast<float>(currentFrameSec - lastFrameSec);
         lastFrameSec = currentFrameSec;
 
         cout << 1.0 / deltaTimeSec << endl;
