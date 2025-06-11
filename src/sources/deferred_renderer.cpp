@@ -1,38 +1,51 @@
 #include "deferred_renderer.hpp"
 
-#define GEN_TEXTURE(texture) \
+#define GEN_HDR_TEXTURE(texture) \
 glGenTextures(1, &texture); \
 glBindTexture(GL_TEXTURE_2D, texture); \
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, renderParams.screenWidth, renderParams.screenHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); \
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, renderParams.screenWidth, renderParams.screenHeight, 0, GL_RGBA, GL_FLOAT, NULL); \
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); \
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
 
-#define CREATE_TEXTURE() ([&] () { \
+#define CREATE_HDR_TEXTURE() ([&] () { \
     unsigned int texture; \
-    GEN_TEXTURE(texture) \
+    GEN_HDR_TEXTURE(texture) \
     return texture; \
 })()
 
 DeferredRenderer::DeferredRenderer(RenderParams &renderParams) : 
-    mBGuffer(renderParams), 
+    mGBuffer(renderParams), 
     mPointLightsTargetGroup(*DefaultShaders::defferedPointLight),
-    mOutputFrameTexture(CREATE_TEXTURE()),
-    mPingPongTextures{CREATE_TEXTURE(), CREATE_TEXTURE()},
-    mPingPongRenderer(mPointLightsTargetGroup, renderParams, mOutputFrameTexture, mPingPongTextures)
+    mBrightMapTextureHDR(CREATE_HDR_TEXTURE()),
+    mPingPongTexturesHDR{CREATE_HDR_TEXTURE(), CREATE_HDR_TEXTURE()},
+    mPingPongRenderer(mPointLightsTargetGroup, renderParams, mPingPongTexturesHDR[0], mPingPongTexturesHDR)
 {
 
 }
 
 DeferredRenderer::~DeferredRenderer()
 {
-    mBGuffer.~GBuffer();
-    glDeleteTextures(2, mPingPongTextures);
-    glDeleteTextures(1, &mOutputFrameTexture);
+    mGBuffer.~GBuffer();
+    glDeleteTextures(2, mPingPongTexturesHDR);
+    glDeleteTextures(1, &mBrightMapTextureHDR);
 
 }
 
 void DeferredRenderer::render() {
-    
+    mGBuffer.render();
+    RenderShader &shader = mPointLightsTargetGroup.getShader(); 
+    shader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 0, mGBuffer.getAlbedoSpecBuffer());
+    shader.setTexture2D(G_NORMAL_UNIFORM, 1, mGBuffer.getNormalBuffer());
+    shader.setTexture2D(G_POSITION_UNIFORM, 2, mGBuffer.getPositionBuffer());
+}
+
+void DeferredRenderer::clear() const {
+
+}
+
+unsigned int DeferredRenderer::getOutputHDRTexture()
+{
+    return mPingPongRenderer.getOutputTexture();
 }
 
 void DeferredRenderer::addPointLight(std::shared_ptr<DeferredPointLight> pointLight)
