@@ -15,10 +15,9 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 DeferredRenderer::DeferredRenderer(RenderParams &renderParams) : 
     mGBuffer(renderParams), 
-    mPointLightsTargetGroup(*DefaultShaders::defferedPointLight),
     mBrightMapTextureHDR(CREATE_HDR_TEXTURE()),
     mPingPongTexturesHDR{CREATE_HDR_TEXTURE(), CREATE_HDR_TEXTURE()},
-    mPingPongRenderer(mPointLightsTargetGroup, renderParams, mPingPongTexturesHDR[0], mPingPongTexturesHDR)
+    mPingPongRenderer(RenderTargetGroup(*DefaultShaders::defferedPointLight), renderParams, mPingPongTexturesHDR[0], mPingPongTexturesHDR)
 {
 
 }
@@ -33,7 +32,7 @@ DeferredRenderer::~DeferredRenderer()
 
 void DeferredRenderer::render() {
     mGBuffer.render();
-    RenderShader &shader = mPointLightsTargetGroup.getShader(); 
+    RenderShader &shader = *DefaultShaders::defferedPointLight;
     shader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 0, mGBuffer.getAlbedoSpecBuffer());
     shader.setTexture2D(G_NORMAL_UNIFORM, 1, mGBuffer.getNormalBuffer());
     shader.setTexture2D(G_POSITION_UNIFORM, 2, mGBuffer.getPositionBuffer());
@@ -51,7 +50,7 @@ unsigned int DeferredRenderer::getOutputHDRTexture()
 
 void DeferredRenderer::addPointLight(std::shared_ptr<DeferredPointLight> pointLight)
 {
-    mPointLightsTargetGroup.addRenderObject(pointLight);
+    mPingPongRenderer.addRenderObject(pointLight);
 }
 
 void DeferredRenderer::addRenderTargetGroup(RenderTargetGroup &targetGroup)

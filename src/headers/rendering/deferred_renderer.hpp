@@ -15,10 +15,9 @@ const std::string G_BRIGHT_OUTPUT_UNIFORM= "brightBuffer";
 
 class DeferredRenderer : public IRenderer {
     private:
-        PingPongBufferRenderer mPingPongRenderer;
         GBuffer mGBuffer;
         const unsigned int mBrightMapTextureHDR, mPingPongTexturesHDR[2];
-        RenderTargetGroup mPointLightsTargetGroup;
+        PingPongBufferRenderer mPingPongRenderer;
 
     public:
         DeferredRenderer(RenderParams &renderParams);
