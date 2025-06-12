@@ -20,8 +20,6 @@ class ScreenRenderObject : public IRenderObject {
     
     public:
         void render(RenderShader &shader) override;
-
-    protected:
         ScreenRenderObject();
 
 };
