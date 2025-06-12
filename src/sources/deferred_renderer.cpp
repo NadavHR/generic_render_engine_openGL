@@ -31,6 +31,8 @@ DeferredRenderer::~DeferredRenderer()
 }
 
 void DeferredRenderer::render() {
+    mGBuffer.clear();
+    mPingPongRenderer.clear();
     mGBuffer.render();
     RenderShader &shader = *DefaultShaders::defferedPointLight;
     shader.use();
@@ -57,4 +59,9 @@ void DeferredRenderer::addPointLight(std::shared_ptr<DeferredPointLight> pointLi
 void DeferredRenderer::addRenderTargetGroup(RenderTargetGroup &targetGroup)
 {
     mGBuffer.addRenderTargetGroup(&targetGroup);
+}
+
+GBuffer& DeferredRenderer::getGbuffer()
+{
+    return mGBuffer;
 }
