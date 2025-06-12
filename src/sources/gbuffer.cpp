@@ -34,7 +34,6 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
     glGenRenderbuffers(1, &mDepthRBO);
     glBindRenderbuffer(GL_RENDERBUFFER, mDepthRBO); 
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mRenderParams.screenWidth, mRenderParams.screenHeight);  
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthRBO);
 
     // make sure the frame buffer is complete
@@ -42,7 +41,7 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
         std::cout << "ERROR: Frame buffer incomplete" << std::endl;
     }
 
-    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 GBuffer::~GBuffer()
@@ -57,12 +56,14 @@ GBuffer::~GBuffer()
 void GBuffer::render() 
 {
     bind();
+
     // render
     // ------
     glEnable(GL_DEPTH_TEST); 
     for (RenderTargetGroup * target : mRenderTargets) {
         target->render(mRenderParams);
     }
+    glDisable(GL_DEPTH_TEST);
 }
 
 void GBuffer::clear() const

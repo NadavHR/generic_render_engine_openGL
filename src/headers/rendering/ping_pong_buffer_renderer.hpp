@@ -24,6 +24,7 @@ class PingPongBuffer : public IFrameBufferRenderer {
 
 /** a renderer that renders ping pong buffers
  * IMPORTANT: the texture in the shader will always use the 0 texture unit, that means every other texture must use another unit, you also must first bind the sampler to the correct unit texture, preferabley using using ```RenderShader::setTexture2D``` 
+ * ALSO IMPORTANT: you should bind the texture in unit 0 AFTER youve already bound the rest of the textures, for some reason it may cause issues if not
  * assumes the shader only computes one output texture that needs to be ping pong'd */
 class PingPongBufferRenderer : public IRenderer
 {

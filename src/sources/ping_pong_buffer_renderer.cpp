@@ -11,8 +11,11 @@ PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, co
     mAction2 = renderFunction2;
     // after every object render, run the buffer's render function and than switch buffer 
     mRenderTargetGroup.setPostObjectRenderFunction([&] (RenderShader& shader, const RenderParams& params) {
+        // set proper active texture unit 
+        glActiveTexture(GL_TEXTURE0); 
+        // bind the texture
+        glBindTexture(GL_TEXTURE_2D, mBuffers[mOnWhichBuffer].mReadTexture);
         mBuffers[mOnWhichBuffer].render();
-        shader.setTexture2D("", 0, mBuffers[mOnWhichBuffer].mReadTexture);
         mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer
         mBuffers[mOnWhichBuffer].bind();
     });

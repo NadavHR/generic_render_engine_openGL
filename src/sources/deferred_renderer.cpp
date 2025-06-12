@@ -31,20 +31,20 @@ DeferredRenderer::~DeferredRenderer()
 }
 
 void DeferredRenderer::render() {
-    mGBuffer.clear();
-    mPingPongRenderer.clear();
+    clear();
     mGBuffer.render();
     RenderShader &shader = *DefaultShaders::defferedPointLight;
     shader.use();
-    shader.setTexture2D(G_OG_COLORS_UNIFORM, 0, mPingPongTexturesHDR[0]);
     shader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 1, mGBuffer.getAlbedoSpecBuffer());
     shader.setTexture2D(G_NORMAL_UNIFORM, 2, mGBuffer.getNormalBuffer());
     shader.setTexture2D(G_POSITION_UNIFORM, 3, mGBuffer.getPositionBuffer());
+    shader.setTexture2D(G_OG_COLORS_UNIFORM, 0, mPingPongTexturesHDR[0]);
     mPingPongRenderer.render();
 }
 
 void DeferredRenderer::clear() const {
     mPingPongRenderer.clear();
+    mGBuffer.clear();
 }
 
 unsigned int DeferredRenderer::getOutputHDRTexture()
