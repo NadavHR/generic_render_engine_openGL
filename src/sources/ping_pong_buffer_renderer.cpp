@@ -9,6 +9,13 @@ PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, co
     mOriginalTexture = originalTexture;
     mAction1 = renderFunction1;
     mAction2 = renderFunction2;
+    // after every object render, run the buffer's render function and than switch buffer 
+    mRenderTargetGroup.setPostObjectRenderFunction([&] (RenderShader& shader, const RenderParams& params) {
+        mBuffers[mOnWhichBuffer].render();
+        shader.setTexture2D("", 0, mBuffers[mOnWhichBuffer].mReadTexture);
+        mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer
+        mBuffers[mOnWhichBuffer].bind();
+    });
 }
 
 unsigned int PingPongBufferRenderer::getOutputTexture()
@@ -29,19 +36,11 @@ void PingPongBufferRenderer::render()
         mBuffers[0].setRenderFunction(mAction1);
     });
 
-    // after every object render, run the buffer's render function and than switch buffer 
-    mRenderTargetGroup.setPostObjectRenderFunction([&] (RenderShader& shader, const RenderParams& params) {
-        mBuffers[mOnWhichBuffer].render();
-        mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer
-        mBuffers[mOnWhichBuffer].bind();
-    });
 
     mBuffers[0].bind(); // make sure the correct buffer is bound at the start
     for (uint8_t i = 0; i < mIterations; i++) {
         mRenderTargetGroup.render(mParams);
     }
-    
-    glEnable(GL_DEPTH_TEST);
 }
 
 void PingPongBufferRenderer::clear() const {
