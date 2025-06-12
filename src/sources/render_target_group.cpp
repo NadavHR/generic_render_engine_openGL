@@ -7,6 +7,7 @@ RenderTargetGroup::RenderTargetGroup(RenderShader &shader, std::vector<std::shar
 ) : mShader(shader), mRenderObjects(renderObjects)
 {
     mPreRender = preRender;
+    mPostObjectRender = postObjectRender;
     mPostRender = postRender;
     mAvailableIndices = std::stack<size_t>();
 }
