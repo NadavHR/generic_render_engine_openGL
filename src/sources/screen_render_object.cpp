@@ -31,5 +31,6 @@ ScreenRenderObject::ScreenRenderObject()
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2*sizeof(float)));
         glEnableVertexAttribArray(1);
         glBindVertexArray(0);
+        quadExists = true;
     }
 }
