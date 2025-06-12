@@ -12,11 +12,22 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm REQUIRED)
 find_package(assimp CONFIG REQUIRED)
 
-file(GLOB_RECURSE PROJECT_SOURCES "src/*.hpp" "src/*.cpp")
+file(GLOB_RECURSE PROJECT_SOURCES "src/*.hpp" "src/*.cpp" )
 
-# set(PROJECT_SOURCES "src/classes" "src/headers" "src")
+file(GLOB_RECURSE ASSETS
+    "src/assets/*"
+)
 
-add_executable(generic_render_engine ${PROJECT_SOURCES})
+add_custom_target(copy_assets ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/src/assets/
+        $<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/Debug/assets,${CMAKE_BINARY_DIR}/bin/Release/assets>
+    DEPENDS ${ASSETS}
+    COMMENT "Copying assets"
+)
+add_executable(generic_render_engine ${PROJECT_SOURCES} )
+add_dependencies(generic_render_engine copy_assets)
+# add_executable(generic_render_engine ${PROJECT_SOURCES})
 
 target_link_libraries(generic_render_engine PRIVATE OpenGL::GL)
 target_link_libraries(generic_render_engine PRIVATE glfw)
@@ -42,13 +53,6 @@ target_compile_definitions(generic_render_engine PRIVATE
 set_target_properties(generic_render_engine PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/bin/Debug"
     RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin/Release"
-)
-
-add_custom_command(
-        TARGET generic_render_engine POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/src/assets/
-                $<IF:$<CONFIG:Debug>,${CMAKE_BINARY_DIR}/bin/Debug/assets,${CMAKE_BINARY_DIR}/bin/Release/assets>
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
