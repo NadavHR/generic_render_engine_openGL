@@ -10,7 +10,7 @@
 const std::string G_POSITION_UNIFORM= "gPosition";
 const std::string G_NORMAL_UNIFORM= "gNormal";
 const std::string G_ALBEDO_SPEC_UNIFORM= "gAlbedoSpec";
-const std::string G_OUTPUT_UNIFORM= "hdrBuffer";
+const std::string G_OG_COLORS_UNIFORM= "hdrBuffer";
 const std::string G_BRIGHT_OUTPUT_UNIFORM= "brightBuffer";
 
 class DeferredRenderer : public IRenderer {
@@ -41,6 +41,7 @@ class DeferredRenderer : public IRenderer {
         float gamma;
         // exposure value
         float exposure;
+        GBuffer& getGbuffer();
 
 };
 
