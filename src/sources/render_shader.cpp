@@ -61,7 +61,7 @@ void RenderShader::setInt(const std::string &name, int value)
 
 void RenderShader::setFloat(const std::string &name, float value)
 {
-    glUniform1i(getUniformLocation(name), value);  
+    glUniform1f(getUniformLocation(name), value);  
 }
 
 void RenderShader::setTransform(const std::string &name, glm::mat4 value)
@@ -87,9 +87,9 @@ void RenderShader::setTexture2D(const std::string &name, unsigned int textureUni
 {
     // set proper active texture unit 
     glActiveTexture(GL_TEXTURE0 + textureUnit); 
-    // set sampler
-    glUniform1i(getUniformLocation((name).c_str()), textureUnit);
-    // bind the texture
+    // set sampler to texture unit
+    glUniform1i(getUniformLocation((name).c_str()), GL_TEXTURE0 + textureUnit);
+    // bind the texture to the texture unit
     glBindTexture(GL_TEXTURE_2D, textureId);
 }
 
