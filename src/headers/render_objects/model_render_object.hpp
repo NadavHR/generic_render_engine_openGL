@@ -27,6 +27,7 @@ class ModelRenderObject : public ISpatialRenderObject {
 
 class DynamicModelRenderObject : public ModelRenderObject {
     public:
+        DynamicModelRenderObject(Model &model, glm::vec3 &position, glm::vec3 &rotation, glm::vec3 &scale);
         /** renders the model (assumes shader already in use) and also updates the models transformation matrix
          * 
          */
