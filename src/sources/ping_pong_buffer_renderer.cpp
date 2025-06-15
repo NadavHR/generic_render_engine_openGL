@@ -2,6 +2,7 @@
 
 PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, const RenderParams &params, const unsigned int originalTexture, const unsigned int textures[2], const std::function<void()> renderFunction1, const std::function<void()> renderFunction2, uint8_t iters)
                                                  : mParams(params), 
+                                                mTextures{textures[0], textures[1]},
                                                 mBuffers{PingPongBuffer(params, renderFunction1, textures[0], textures[1]),
                                                         PingPongBuffer(params, renderFunction2, textures[1], textures[0])}, mRenderTargetGroup(targetGroup)
 {
@@ -23,7 +24,7 @@ PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, co
 
 unsigned int PingPongBufferRenderer::getOutputTexture()
 {
-    return mTextures[(mOnWhichBuffer + 1) % 2]; 
+    return mTextures[mOnWhichBuffer]; 
 }
 
 void PingPongBufferRenderer::render()
@@ -44,6 +45,8 @@ void PingPongBufferRenderer::render()
     for (uint8_t i = 0; i < mIterations; i++) {
         mRenderTargetGroup.render(mParams);
     }
+
+    mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer to make sure the last buffer drawn to will be the one returned 
 }
 
 void PingPongBufferRenderer::clear() const {
