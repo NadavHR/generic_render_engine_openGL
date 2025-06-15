@@ -13,11 +13,16 @@ const std::string G_ALBEDO_SPEC_UNIFORM= "gAlbedoSpec";
 const std::string G_OG_COLORS_UNIFORM= "hdrBuffer";
 const std::string G_BRIGHT_OUTPUT_UNIFORM= "brightBuffer";
 
-class DeferredRenderer : public IRenderer {
+
+const std::string AMBIENT_COLOR_UNIFORM = "AmbientColor";
+const std::string AMBIENT_STRENGTH_UNIFORM = "AmbientStrength";
+
+class DeferredRenderer : public IFrameBufferRenderer {
     private:
         GBuffer mGBuffer;
         const unsigned int mBrightMapTextureHDR, mPingPongTexturesHDR[2];
         PingPongBufferRenderer mPingPongRenderer;
+        ScreenRenderObject mScreenRenderer;
 
     public:
         DeferredRenderer(RenderParams &renderParams);
@@ -34,9 +39,9 @@ class DeferredRenderer : public IRenderer {
         void addPointLight(std::shared_ptr<DeferredPointLight> pointLight);
         void addRenderTargetGroup(RenderTargetGroup &targetGroup);
         // strength of ambient light
-        float ambientStrength;
+        float ambientStrength = 0.05;
         // color of ambient light
-        glm::vec3 ambientColor;
+        glm::vec3 ambientColor = glm::vec3(1.0, 1.0, 1.0);
         // gamma correction value
         float gamma;
         // exposure value

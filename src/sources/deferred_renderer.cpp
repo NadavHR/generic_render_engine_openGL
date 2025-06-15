@@ -14,11 +14,27 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 })()
 
 DeferredRenderer::DeferredRenderer(RenderParams &renderParams) : 
+    IFrameBufferRenderer(renderParams),
     mGBuffer(renderParams), 
     mBrightMapTextureHDR(CREATE_HDR_TEXTURE()),
     mPingPongTexturesHDR{CREATE_HDR_TEXTURE(), CREATE_HDR_TEXTURE()},
-    mPingPongRenderer(RenderTargetGroup(*DefaultShaders::defferedPointLight), renderParams, mPingPongTexturesHDR[0], mPingPongTexturesHDR)
+    mPingPongRenderer(RenderTargetGroup(*DefaultShaders::deferredPointLight), renderParams, mPingPongTexturesHDR[0], mPingPongTexturesHDR)
 {
+    // attach the textures to this FBO so we can render to it
+    bind();
+    glBindTexture(GL_TEXTURE_2D, mPingPongTexturesHDR[0]);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mPingPongTexturesHDR[0], 0);
+    glBindTexture(GL_TEXTURE_2D, mBrightMapTextureHDR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, mBrightMapTextureHDR, 0);
+    unsigned int attachmentsHDR[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, attachmentsHDR);
+
+    // make sure the frame buffer is complete
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "ERROR: Frame buffer incomplete" << std::endl;
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
 
@@ -31,14 +47,30 @@ DeferredRenderer::~DeferredRenderer()
 }
 
 void DeferredRenderer::render() {
+    // clear everything
     clear();
+
+    // render the gbuffer
     mGBuffer.render();
-    RenderShader &shader = *DefaultShaders::defferedPointLight;
-    shader.use();
-    shader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 1, mGBuffer.getAlbedoSpecBuffer());
-    shader.setTexture2D(G_NORMAL_UNIFORM, 2, mGBuffer.getNormalBuffer());
-    shader.setTexture2D(G_POSITION_UNIFORM, 3, mGBuffer.getPositionBuffer());
-    shader.setTexture2D(G_OG_COLORS_UNIFORM, 0, mPingPongTexturesHDR[0]);
+
+    // render ambient light
+    bind();
+    RenderShader &ambientLightShader = *DefaultShaders::deferredAmbientLight;
+    ambientLightShader.use();
+    ambientLightShader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 0, mGBuffer.getAlbedoSpecBuffer());
+    ambientLightShader.setTexture2D(G_NORMAL_UNIFORM, 1, mGBuffer.getNormalBuffer());
+    ambientLightShader.setTexture2D(G_POSITION_UNIFORM, 2, mGBuffer.getPositionBuffer());
+    ambientLightShader.setVec3(AMBIENT_COLOR_UNIFORM, ambientColor);
+    ambientLightShader.setFloat(AMBIENT_STRENGTH_UNIFORM, ambientStrength);
+    mScreenRenderer.render(ambientLightShader);
+
+    // render point lights
+    RenderShader &pointLightShader = *DefaultShaders::deferredPointLight;
+    pointLightShader.use();
+    pointLightShader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 1, mGBuffer.getAlbedoSpecBuffer());
+    pointLightShader.setTexture2D(G_NORMAL_UNIFORM, 2, mGBuffer.getNormalBuffer());
+    pointLightShader.setTexture2D(G_POSITION_UNIFORM, 3, mGBuffer.getPositionBuffer());
+    pointLightShader.setTexture2D(G_OG_COLORS_UNIFORM, 0, mPingPongTexturesHDR[0]);
     mPingPongRenderer.render();
 }
 

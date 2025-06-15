@@ -1,4 +1,4 @@
-#version 330 core
+#version 330 
 out vec4 FragColor;
 
 in vec2 TexCoords;
@@ -18,5 +18,11 @@ void main()
     mapped = pow(mapped, vec3(1.0 / gamma));
   
     FragColor = vec4(mapped, 1.0);
+    // FragColor = vec4(1.0, 0.0, 0.0, 0.0);
+    // if (length(hdrColor) > 0.0){
+    //     FragColor = vec4(1.0);
+    // } else {
+    //     FragColor = vec4(0.0);
+    // }
     // FragColor = vec4(hdrColor, 1.0);
 }  

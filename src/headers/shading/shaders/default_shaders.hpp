@@ -5,7 +5,8 @@
 #define PATH_TO_SHADER(shader) ("./assets/shaders/" shader)
 
 namespace DefaultShaders {
-    extern RenderShader *defferedPointLight;
+    extern RenderShader *deferredPointLight;
+    extern RenderShader *deferredAmbientLight;
     extern RenderShader *modelRenderDeferredHDR;
     extern RenderShader *toneMapper;
     void initializeShaders();
