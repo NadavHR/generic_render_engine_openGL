@@ -3,8 +3,9 @@
 #include "screen_render_object.hpp"
 #include <string>
 
-const std::string POINT_LIGHT_POSITION_UNIFORM = "position"; 
-const std::string POINT_LIGHT_COLOR_UNIFORM = "color";
+
+const std::string POINT_LIGHT_POSITION_UNIFORM = "Position"; 
+const std::string POINT_LIGHT_COLOR_UNIFORM = "Color";
 const std::string POINT_LIGHT_QUADRATIC_UNIFORM = "quadratic";
 const std::string POINT_LIGHT_LINEAR_UNIFORM = "linear";
 const std::string POINT_LIGHT_THRESHOLD_UNIFORM = "lightThreshold";
