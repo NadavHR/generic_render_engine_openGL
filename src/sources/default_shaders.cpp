@@ -3,6 +3,7 @@ RenderShader *DefaultShaders::deferredPointLight = NULL;
 RenderShader *DefaultShaders::deferredAmbientLight = NULL;
 RenderShader *DefaultShaders::modelRenderDeferredHDR = NULL;
 RenderShader *DefaultShaders::toneMapper = NULL;
+
 void DefaultShaders::initializeShaders() {
     BasicShader noChangesVertex(PATH_TO_SHADER("no_changes.vs"), GL_VERTEX_SHADER);
     BasicShader defferedPointLightFragment(PATH_TO_SHADER("deffered_point_light.fs"), GL_FRAGMENT_SHADER);
@@ -17,4 +18,23 @@ void DefaultShaders::initializeShaders() {
 
     BasicShader toneMapperFragment(PATH_TO_SHADER("tone_mapper.fs"), GL_FRAGMENT_SHADER);
     toneMapper = new RenderShader(noChangesVertex, toneMapperFragment);
+}
+
+void DefaultShaders::setViewForShaders(glm::vec3 viewPose, glm::mat4 viewRotation)
+{
+    deferredAmbientLight->use();
+    deferredAmbientLight->setVec3(VIEW_POSE_UNIFORM, viewPose);
+    deferredAmbientLight->setTransform(VIEW_ROT_UNIFORM, viewRotation);
+
+    deferredPointLight->use();
+    deferredPointLight->setVec3(VIEW_POSE_UNIFORM, viewPose);
+
+    modelRenderDeferredHDR->use();
+    modelRenderDeferredHDR->setTransform(VIEW_TRANSFORM_UNIFORM, glm::translate(viewRotation, viewPose));
+}
+
+void DefaultShaders::setRenderParamsForShaders(const RenderParams &renderParms)
+{
+    deferredAmbientLight->use();
+    deferredAmbientLight->setVec2(TEXEL_SIZE_UNIFORM, glm::vec2(1.0 / renderParms.screenWidth, 1.0 / renderParms.screenHeight));
 }

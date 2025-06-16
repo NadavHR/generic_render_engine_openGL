@@ -20,6 +20,7 @@
 #include <vector>
 using namespace std;
 
+const std::string MODEL_TRANSFORM_UNIFORM = "Model";
 unsigned int TextureFromFile(const char *path, const string &directory);
 
 class Model 

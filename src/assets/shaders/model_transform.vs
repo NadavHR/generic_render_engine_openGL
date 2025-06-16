@@ -10,20 +10,20 @@ out vec3 normal;
 out vec3 FragPos;
 out mat3 TBN;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 Projection;
 
 void main()
 {
     TexCoords = aTexCoords;    
     normal = aNormal;
-    vec4 pos = model * vec4(aPos, 1.0);
+    vec4 pos = Model * vec4(aPos, 1.0);
     FragPos = pos.xyz;
-    gl_Position = projection * view * pos;
-    vec3 T = normalize(vec3(model * vec4(aTangent,   0.0)));
-    vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
-    vec3 N = normalize(vec3(model * vec4(aNormal,    0.0)));
+    gl_Position = Projection * View * pos;
+    vec3 T = normalize(vec3(Model * vec4(aTangent,   0.0)));
+    vec3 B = normalize(vec3(Model * vec4(aBitangent, 0.0)));
+    vec3 N = normalize(vec3(Model * vec4(aNormal,    0.0)));
     TBN = mat3(T, B, N);
 
 }

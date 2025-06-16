@@ -12,7 +12,7 @@ uniform sampler2D brightBuffer;
 
 uniform vec3 Position;
 uniform vec3 Color;
-uniform vec3 viewPos;
+uniform vec3 ViewPos;
 uniform float quadratic, linear, lightThreshold;
 void main()
 {             
@@ -25,7 +25,7 @@ void main()
     vec3 bright =  texture(brightBuffer, TexCoords).rgb;
 
     float dis = length(Position - FragPos);
-    vec3 viewDir  = normalize(viewPos - FragPos);
+    vec3 viewDir  = normalize(ViewPos - FragPos);
     
     // diffuse
     vec3 lightDir = normalize(Position - FragPos);
