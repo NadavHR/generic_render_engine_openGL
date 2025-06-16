@@ -85,6 +85,15 @@ unsigned int DeferredRenderer::getOutputHDRTexture()
     return mPingPongRenderer.getOutputTexture();
 }
 
+void DeferredRenderer::toneMap()
+{
+    DefaultShaders::toneMapper->use();
+    DefaultShaders::toneMapper->setTexture2D("hdrBuffer", 0, getOutputHDRTexture());
+    DefaultShaders::toneMapper->setFloat("exposure", exposure);
+    DefaultShaders::toneMapper->setFloat("gamma", gamma);
+    mScreenRenderer.render(*DefaultShaders::toneMapper);
+}
+
 void DeferredRenderer::addPointLight(std::shared_ptr<DeferredPointLight> pointLight)
 {
     mPingPongRenderer.addRenderObject(pointLight);

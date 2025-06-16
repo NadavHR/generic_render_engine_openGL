@@ -36,6 +36,9 @@ class DeferredRenderer : public IFrameBufferRenderer {
         // returns the HDR texture containing the output, this is not always the same texture
         unsigned int getOutputHDRTexture();
 
+        // tonemaps the result and renders the tonemapped result to whatever framebuffer is bound when toneMapping
+        void toneMap();
+
         void addPointLight(std::shared_ptr<DeferredPointLight> pointLight);
         void addRenderTargetGroup(RenderTargetGroup &targetGroup);
         // strength of ambient light
@@ -43,9 +46,9 @@ class DeferredRenderer : public IFrameBufferRenderer {
         // color of ambient light
         glm::vec3 ambientColor = glm::vec3(1.0, 1.0, 1.0);
         // gamma correction value
-        float gamma;
+        float gamma = 2.2;
         // exposure value
-        float exposure;
+        float exposure = 0.5;
         GBuffer& getGbuffer();
 
 };
