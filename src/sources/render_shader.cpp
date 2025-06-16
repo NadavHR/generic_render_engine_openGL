@@ -87,10 +87,10 @@ void RenderShader::setTexture2D(const std::string &name, unsigned int textureUni
 {
     // set proper active texture unit 
     glActiveTexture(GL_TEXTURE0 + textureUnit); 
-    // set sampler to texture unit
-    glUniform1i(getUniformLocation((name).c_str()), GL_TEXTURE0 + textureUnit);
     // bind the texture to the texture unit
     glBindTexture(GL_TEXTURE_2D, textureId);
+    // set sampler to texture unit
+    glUniform1i(getUniformLocation((name).c_str()), textureUnit);
 }
 
 unsigned int RenderShader::getProgramID() const
