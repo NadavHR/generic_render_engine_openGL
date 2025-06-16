@@ -1,4 +1,3 @@
-
 #version 330 core
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
@@ -25,7 +24,7 @@ void main()
     vec3 color = texture(hdrBuffer, TexCoords).rgb;
     vec3 bright =  texture(brightBuffer, TexCoords).rgb;
 
-    float distance = length(Position - FragPos);
+    float dis = length(Position - FragPos);
     vec3 viewDir  = normalize(viewPos - FragPos);
     
     // diffuse
@@ -36,7 +35,7 @@ void main()
     float spec = pow(max(dot(Normal, halfwayDir), 0.0), 32.0);
     vec3 specular = Color * spec * Specular;
     // attenuation
-    float attenuation = 1.0 / (1.0 + linear * distance + quadratic * distance * distance);
+    float attenuation = 1.0 / (1.0 + linear * dis + quadratic * dis * dis);
     diffuse *= attenuation;
     specular *= attenuation;
     vec3 lighting = diffuse + specular;

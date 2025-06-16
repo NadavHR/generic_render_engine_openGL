@@ -18,12 +18,13 @@ DeferredRenderer::DeferredRenderer(RenderParams &renderParams) :
     mGBuffer(renderParams), 
     mBrightMapTextureHDR(CREATE_HDR_TEXTURE()),
     mPingPongTexturesHDR{CREATE_HDR_TEXTURE(), CREATE_HDR_TEXTURE()},
-    mPingPongRenderer(RenderTargetGroup(*DefaultShaders::deferredPointLight), renderParams, mPingPongTexturesHDR[0], mPingPongTexturesHDR)
+    // the original texture will be mPingPongTexturesHDR[1] and we'll write the ambient light there to avoid creating another texture for nothing but also to avoid reading and writing to the same texture at the same time
+    mPingPongRenderer(RenderTargetGroup(*DefaultShaders::deferredPointLight), renderParams, mPingPongTexturesHDR[1], mPingPongTexturesHDR)
 {
     // attach the textures to this FBO so we can render to it
     bind();
-    glBindTexture(GL_TEXTURE_2D, mPingPongTexturesHDR[0]);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mPingPongTexturesHDR[0], 0);
+    glBindTexture(GL_TEXTURE_2D, mPingPongTexturesHDR[1]);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mPingPongTexturesHDR[1], 0);
     glBindTexture(GL_TEXTURE_2D, mBrightMapTextureHDR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, mBrightMapTextureHDR, 0);
     unsigned int attachmentsHDR[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -67,10 +68,10 @@ void DeferredRenderer::render() {
     // render point lights
     RenderShader &pointLightShader = *DefaultShaders::deferredPointLight;
     pointLightShader.use();
-    pointLightShader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 1, mGBuffer.getAlbedoSpecBuffer());
-    pointLightShader.setTexture2D(G_NORMAL_UNIFORM, 2, mGBuffer.getNormalBuffer());
-    pointLightShader.setTexture2D(G_POSITION_UNIFORM, 3, mGBuffer.getPositionBuffer());
-    pointLightShader.setTexture2D(G_OG_COLORS_UNIFORM, 0, mPingPongTexturesHDR[0]);
+    pointLightShader.setTexture2D(G_OG_COLORS_UNIFORM, 0, mPingPongTexturesHDR[1]);
+    pointLightShader.setTexture2D(G_ALBEDO_SPEC_UNIFORM, 3, mGBuffer.getAlbedoSpecBuffer());
+    pointLightShader.setTexture2D(G_NORMAL_UNIFORM, 1, mGBuffer.getNormalBuffer());
+    pointLightShader.setTexture2D(G_POSITION_UNIFORM, 2, mGBuffer.getPositionBuffer());
     mPingPongRenderer.render();
 }
 

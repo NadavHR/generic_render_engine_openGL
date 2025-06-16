@@ -12,19 +12,20 @@ PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, co
     mAction2 = renderFunction2;
     // after every object render, run the buffer's render function and than switch buffer 
     mRenderTargetGroup.setPostObjectRenderFunction([&] (RenderShader& shader, const RenderParams& params) {
+        mBuffers[mOnWhichBuffer].render(); // calls the render function for this buffer before switching to the next
+
+        mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer
+        mBuffers[mOnWhichBuffer].bind();
         // set proper active texture unit 
         glActiveTexture(GL_TEXTURE0); 
         // bind the texture
         glBindTexture(GL_TEXTURE_2D, mBuffers[mOnWhichBuffer].mReadTexture);
-        mBuffers[mOnWhichBuffer].render();
-        mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer
-        mBuffers[mOnWhichBuffer].bind();
     });
 }
 
 unsigned int PingPongBufferRenderer::getOutputTexture()
 {
-    return mTextures[mOnWhichBuffer]; 
+    return mBuffers[mOnWhichBuffer].mReadTexture; 
 }
 
 void PingPongBufferRenderer::render()
@@ -45,8 +46,6 @@ void PingPongBufferRenderer::render()
     for (uint8_t i = 0; i < mIterations; i++) {
         mRenderTargetGroup.render(mParams);
     }
-
-    mOnWhichBuffer = (mOnWhichBuffer + 1) % 2; // switches buffer to make sure the last buffer drawn to will be the one returned 
 }
 
 void PingPongBufferRenderer::clear() const {
@@ -72,7 +71,6 @@ void PingPongBufferRenderer::setIterations(uint8_t iterations)
 void PingPongBuffer::bind() const 
 {
     FrameBufferObject::bind();
-    glBindTexture(GL_TEXTURE_2D, mReadTexture); 
 }
 
 void PingPongBuffer::render()
