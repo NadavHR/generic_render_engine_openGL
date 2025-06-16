@@ -31,14 +31,14 @@ void main()
     vec3 normalxn = texture(gNormal, TexCoords - texelOffsetx).rgb;
     vec3 normalyp = texture(gNormal, TexCoords + texelOffsety).rgb;
     vec3 normalyn = texture(gNormal, TexCoords - texelOffsety).rgb;
-    float AmbientOcclusion = max(0, min(1.0, 
-        1.0 - (1 * (
-        dot(normalxp, vec3(-texelOffsetx, 0)) +
-        dot(normalxn, vec3(texelOffsetx, 0))) +
-        dot(normalyp, vec3(-texelOffsety, 0)) +
-        dot(normalyn, vec3(texelOffsety, 0)))));
+    float AmbientOcclusion = max(0, (
+        dot(normalxp - Normal, vec3(texelOffsetx, 0)) +
+        dot(normalxn - Normal, vec3(-texelOffsetx, 0))) +
+        dot(normalyp - Normal, vec3(texelOffsety, 0)) +
+        dot(normalyn - Normal, vec3(-texelOffsety, 0)));
     
-    vec3 lighting = AmbientColor * AmbientStrength * Albedo * AmbientOcclusion; 
+    vec3 lighting = AmbientStrength * ((AmbientColor * Albedo) - (AmbientColor * AmbientOcclusion)); 
+    // vec3 lighting = AmbientColor * AmbientOcclusion;
     
     FragColor = vec4(lighting, 1.0);
     // FragColor = vec4(Albedo, 1.0);
