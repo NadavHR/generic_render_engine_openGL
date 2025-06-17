@@ -5,9 +5,9 @@
 class ISpatialRenderObject : public IRenderObject
 {
     public:
-        const glm::vec4 X_BASE_VECTOR = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-        const glm::vec4 Y_BASE_VECTOR = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
-        const glm::vec4 Z_BASE_VECTOR = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+        constexpr static const glm::vec4 X_BASE_VECTOR = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        constexpr static const glm::vec4 Y_BASE_VECTOR = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+        constexpr static const glm::vec4 Z_BASE_VECTOR = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
         glm::mat4 getTransformationMatrix() {
             // scale
