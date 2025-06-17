@@ -1,7 +1,7 @@
 #include "model_render_object.hpp"
 
 ModelRenderObject::ModelRenderObject(Model &model, 
-                                    glm::vec3 &position, glm::vec3 &rotation, glm::vec3 &scale) :
+                                    glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) :
                                      mModel(model), ISpatialRenderObject(position, rotation, scale)
 {
     updateTransformation();
@@ -24,7 +24,7 @@ Model &ModelRenderObject::getModel() {
     return mModel;
 }
 
-DynamicModelRenderObject::DynamicModelRenderObject(Model &model, glm::vec3 &position, glm::vec3 &rotation, glm::vec3 &scale) :
+DynamicModelRenderObject::DynamicModelRenderObject(Model &model, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) :
  ModelRenderObject(model, position, rotation, scale)
 {
 }

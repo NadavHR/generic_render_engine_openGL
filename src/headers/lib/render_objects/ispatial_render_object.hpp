@@ -9,30 +9,30 @@ class ISpatialRenderObject : public IRenderObject
         constexpr static const glm::vec4 Y_BASE_VECTOR = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
         constexpr static const glm::vec4 Z_BASE_VECTOR = glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 
+        glm::vec3 position;
+        glm::vec3 rotation;
+        glm::vec3 scale;
+
         glm::mat4 getTransformationMatrix() {
             // scale
-            glm::mat4 scale(1.0f);  
-            scale = glm::scale(scale, mScale);         
+            glm::mat4 scaleMat(1.0f);  
+            scaleMat = glm::scale(scaleMat, scale);         
 
             // rotation
-            glm::mat4 rotation(1.0f);  
-            rotation = glm::rotate(rotation, mRotation.z, glm::vec3(Z_BASE_VECTOR));
-            rotation = glm::rotate(rotation, mRotation.y, glm::vec3(Y_BASE_VECTOR));
-            rotation = glm::rotate(rotation, mRotation.x, glm::vec3(X_BASE_VECTOR));
+            glm::mat4 rotationMat(1.0f);  
+            rotationMat = glm::rotate(rotationMat, rotation.z, glm::vec3(Z_BASE_VECTOR));
+            rotationMat = glm::rotate(rotationMat, rotation.y, glm::vec3(Y_BASE_VECTOR));
+            rotationMat = glm::rotate(rotationMat, rotation.x, glm::vec3(X_BASE_VECTOR));
 
             // translation
-            glm::mat4 translation(1.0f);
-            glm::vec3 position(mPosition);
-            translation = glm::translate(translation, position);  
+            glm::mat4 translationMat(1.0f);
+            translationMat = glm::translate(translationMat, position);  
 
-            return translation * rotation * scale;
+            return translationMat * rotationMat * scaleMat;
         }
 
     protected:
-        ISpatialRenderObject(glm::vec3 &position, glm::vec3 &rotation, glm::vec3 &scale) : mPosition(position), mRotation(rotation), mScale(scale) {} 
-        glm::vec3 &mPosition;
-        glm::vec3 &mRotation;
-        glm::vec3 &mScale;
+        ISpatialRenderObject(glm::vec3 initialPosition, glm::vec3 initialRotation, glm::vec3 initialScale) : position(initialPosition), rotation(initialRotation), scale(initialScale) {} 
 
 };
 
