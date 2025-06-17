@@ -35,15 +35,22 @@ target_link_libraries(generic_render_engine PRIVATE glad::glad)
 target_link_libraries(generic_render_engine PRIVATE glm::glm-header-only)
 target_link_libraries(generic_render_engine PRIVATE assimp::assimp)
 
-target_include_directories(generic_render_engine PUBLIC 
-        "src/" 
-        "src/classes/" 
-        "src/headers/" 
-        "src/headers/render_objects/" 
-        "src/headers/rendering/" 
-        "src/headers/shading/" 
-        "src/headers/shading/shaders")
+# Collect all directories under src/headers recursively
+file(GLOB_RECURSE HEADER_DIRS LIST_DIRECTORIES true "${CMAKE_SOURCE_DIR}/src/headers/*")
 
+# Filter only directories (not files)
+set(ALL_HEADER_DIRS "")
+foreach(dir ${HEADER_DIRS})
+    if(IS_DIRECTORY ${dir})
+        list(APPEND ALL_HEADER_DIRS ${dir})
+    endif()
+endforeach()
+
+target_include_directories(generic_render_engine PUBLIC
+    "src/"
+    "src/headers"
+    ${ALL_HEADER_DIRS}
+)
 # Set preprocessor definitions and output directories based on build type
 target_compile_definitions(generic_render_engine PRIVATE 
     $<$<CONFIG:Debug>:DEBUG_BUILD>
