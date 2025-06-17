@@ -10,12 +10,13 @@ namespace DefaultShaders {
     const std::string VIEW_ROT_UNIFORM = "ViewRot";
     const std::string VIEW_TRANSFORM_UNIFORM = "View";
     const std::string TEXEL_SIZE_UNIFORM = "Texel";
+    const std::string PROJECTION_MATRIX_UNIFORM = "Projection";
     extern RenderShader *deferredPointLight;
     extern RenderShader *deferredAmbientLight;
     extern RenderShader *modelRenderDeferredHDR;
     extern RenderShader *toneMapper;
     void initializeShaders();
-    void setViewForShaders(glm::vec3 viewPose, glm::mat4 viewRotation);
+    void setViewForShaders(glm::vec3 const viewPose, glm::mat4 const viewRotation);
     void setRenderParamsForShaders(const RenderParams &renderParms);
 }
 

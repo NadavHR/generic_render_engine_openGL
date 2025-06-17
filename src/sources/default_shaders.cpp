@@ -20,7 +20,7 @@ void DefaultShaders::initializeShaders() {
     toneMapper = new RenderShader(noChangesVertex, toneMapperFragment);
 }
 
-void DefaultShaders::setViewForShaders(glm::vec3 viewPose, glm::mat4 viewRotation)
+void DefaultShaders::setViewForShaders(glm::vec3 const viewPose, glm::mat4 const viewRotation)
 {
     deferredAmbientLight->use();
     deferredAmbientLight->setVec3(VIEW_POSE_UNIFORM, viewPose);
@@ -37,4 +37,7 @@ void DefaultShaders::setRenderParamsForShaders(const RenderParams &renderParms)
 {
     deferredAmbientLight->use();
     deferredAmbientLight->setVec2(TEXEL_SIZE_UNIFORM, glm::vec2(1.0 / renderParms.screenWidth, 1.0 / renderParms.screenHeight));
+
+    modelRenderDeferredHDR->use();
+    modelRenderDeferredHDR->setTransform(PROJECTION_MATRIX_UNIFORM, renderParms.getProjectionMatrix());
 }
