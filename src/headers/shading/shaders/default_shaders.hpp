@@ -16,6 +16,8 @@ namespace DefaultShaders {
     extern RenderShader *modelRenderDeferredHDR;
     extern RenderShader *toneMapper;
     void initializeShaders();
+    
+    // TODO: turn this mess to uniform buffer 
     void setViewForShaders(glm::vec3 const viewPose, glm::mat4 const viewRotation);
     void setRenderParamsForShaders(const RenderParams &renderParms);
 }
