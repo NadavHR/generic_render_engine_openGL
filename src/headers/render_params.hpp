@@ -6,9 +6,9 @@
 class RenderParams {
     public:
         uint16_t screenWidth, screenHeight;
-        float fovRadians;
-        float nearField, farField;
-        glm::mat4 getProjectionMatrix() {
+        float fovRadians = 0.7853981633974483f;
+        float nearField = 0.1, farField = 1000.0;
+        glm::mat4 getProjectionMatrix() const {
             return glm::perspective(fovRadians, (float)screenWidth / (float)screenHeight, nearField, farField);
         }
 };
