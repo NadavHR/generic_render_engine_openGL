@@ -27,7 +27,7 @@ class DeferredPointLight : public ScreenRenderObject {
         // point llight threshold
         float lightThreshold;
 
-        DeferredPointLight(glm::vec3 lightPosition, glm::vec3 lightColor, float linear, float quadratic, float threshold);
+        DeferredPointLight(glm::vec3 lightPosition, glm::vec3 lightColor, float linear = 0.1f, float quadratic = 0.01f, float threshold = 0.8f);
         /** renders light source, assumes all relevant uniforms are set correctly (including binding textures), and that the shader is already in use
          * 
          *  also assumes the shader used includes all the correct uniforms (`POINT_LIGHT_POSITION_UNIFORM`, `POINT_LIGHT_COLOR_UNIFORM`, `POINT_LIGHT_LINEAR_UNIFORM`, `POINT_LIGHT_QUADRATIC_UNIFORM`, `POINT_LIGHT_THRESHOLD_UNIFORM`)
