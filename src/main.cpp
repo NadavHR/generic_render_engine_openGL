@@ -80,72 +80,12 @@ int main()
     // ------------------------------------------------------------------ 
 
     // test ---------------------------------------------------------
-    RenderShader &ambientLightShader = *DefaultShaders::deferredAmbientLight;
-    RenderShader &pointLightShader = *DefaultShaders::deferredPointLight;
-    RenderShader &modelRenderShader = *DefaultShaders::modelRenderDeferredHDR;
-    RenderShader &toneMappingShader = *DefaultShaders::toneMapper;
-    RenderShader &copyShader = *DefaultShaders::copyBufferShader;
-    Model testModel("./assets/models/asteroid/asteroid.gltf");
-    DeferredRenderer deferredRenderer(renderParams);
-    // transformation
-
-    glm::vec3 testPosition = glm::vec3(0, 0, -5); 
-    glm::vec3 testLightPosition = glm::vec3(1, 1, -4);    
-    glm::vec3 testRotation = glm::vec3(0, 0, 0);
-    glm::vec3 testScale = glm::vec3(1, 1, 1);
-    glm::vec3 testColor = glm::vec3(1, 0, 0);
-    glm::vec3 testColor2 = glm::vec3(1);
-    float testLinear = 0.1f;
-    float testQuadratic = 0.01f;
-    float testThreshold = 0.8f; 
-    DefaultShaders::setRenderParamsForShaders(renderParams);
-    DefaultShaders::setViewForShaders(glm::vec3(0), glm::mat4(1));
-    auto testModelRenderObject = std::shared_ptr<ModelRenderObject>(new DynamicModelRenderObject(testModel, testPosition, testRotation, testScale));
-    auto testModelRenderObject2 = std::shared_ptr<ModelRenderObject>(new DynamicModelRenderObject(testModel, testLightPosition, testRotation, testScale));
-    auto testPointLight = std::shared_ptr<DeferredPointLight>(new DeferredPointLight(testLightPosition, testColor, testLinear, testQuadratic, testThreshold));
-    auto testPointLight2 = std::shared_ptr<DeferredPointLight>(new DeferredPointLight(testPosition, testColor2, testLinear, testQuadratic, testThreshold));
-    RenderTargetGroup testTargetGroup(modelRenderShader);
-    std::shared_ptr<ScreenRenderObject> testDrawToScreen = std::shared_ptr<ScreenRenderObject>(new ScreenRenderObject());
-    testTargetGroup.addRenderObject(testModelRenderObject2);
-    testTargetGroup.addRenderObject(testModelRenderObject);
-    testTargetGroup.addRenderObject(testDrawToScreen);
-    deferredRenderer.addRenderTargetGroup(testTargetGroup);
-    deferredRenderer.addPointLight(testPointLight);
-    deferredRenderer.addPointLight(testPointLight2);
-
-    ScreenRenderObject screenRenderer;
-    // TestScene testScene = TestScene();
-    // glfwSetWindowSize(window, testScene.renderParams.frameWidth, testScene.renderParams.frameHeight);
-    // testScene.init();
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    TestScene testScene = TestScene();
+    glfwSetWindowSize(window, testScene.renderParams.frameWidth, testScene.renderParams.frameHeight);
+    testScene.init();
     while (true)
     {
-        // #define DISPLAY(texture) \
-        // glBindFramebuffer(GL_FRAMEBUFFER, 0);\
-        // DefaultShaders::copyBufferShader->use(); \
-        // DefaultShaders::copyBufferShader->setTexture2D("Buffer", 0, texture);\
-        // screenRenderer.render(*DefaultShaders::copyBufferShader); \
-        // glfwSwapBuffers(window); \
-        // glfwPollEvents();
-
-        // DefaultShaders::setRenderParamsForShaders(renderParams);
-        // DefaultShaders::setViewForShaders(glm::vec3(0), glm::mat4(1));
-        // deferredRenderer.getGbuffer().render();
-
-        // // deferredRenderer.getGbuffer().render();
-        // DISPLAY(deferredRenderer.getGbuffer().getNormalBuffer())
-        // DISPLAY(deferredRenderer.getGbuffer().getAlbedoSpecBuffer())
-        // DISPLAY(deferredRenderer.getGbuffer().getPositionBuffer())
-
-        // deferredRenderer.getGbuffer().render();
-
-        // DISPLAY(deferredRenderer.getGbuffer().getNormalBuffer())
-        // DISPLAY(deferredRenderer.getGbuffer().getAlbedoSpecBuffer())
-        // DISPLAY(deferredRenderer.getGbuffer().getPositionBuffer())
-        deferredRenderer.render();
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        deferredRenderer.toneMap();
-        // testScene.renderTo(0);
+        testScene.renderTo(0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
