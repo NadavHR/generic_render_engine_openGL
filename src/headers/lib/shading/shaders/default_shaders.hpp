@@ -15,6 +15,7 @@ namespace DefaultShaders {
     extern RenderShader *deferredAmbientLight;
     extern RenderShader *modelRenderDeferredHDR;
     extern RenderShader *toneMapper;
+    extern RenderShader *copyBufferShader;
     void initializeShaders();
     
     // TODO: turn this mess to uniform buffer 
