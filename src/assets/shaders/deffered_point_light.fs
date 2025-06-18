@@ -1,4 +1,4 @@
-#version 330 core
+#version 410 core
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
@@ -8,7 +8,6 @@ uniform sampler2D gPosition;
 uniform sampler2D gNormal;
 uniform sampler2D gAlbedoSpec;
 uniform sampler2D hdrBuffer;
-uniform sampler2D brightBuffer;
 
 uniform vec3 Position;
 uniform vec3 Color;
@@ -22,7 +21,6 @@ void main()
     vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
     float Specular = texture(gAlbedoSpec, TexCoords).a;
     vec3 color = texture(hdrBuffer, TexCoords).rgb;
-    vec3 bright =  texture(brightBuffer, TexCoords).rgb;
 
     float dis = length(Position - FragPos);
     vec3 viewDir  = normalize(ViewPos - FragPos);
@@ -44,7 +42,7 @@ void main()
     // FragColor = vec4(color, 1.0);
 
     if (length(FragColor.rgb) > lightThreshold) {
-        BrightColor = vec4(bright + FragColor.rgb, 1.0);
+        BrightColor = vec4(FragColor.rgb, 1.0);
     }
     else {
         BrightColor = vec4(0, 0, 0, 1);
