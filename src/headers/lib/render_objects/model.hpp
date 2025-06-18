@@ -35,7 +35,7 @@ public:
     Model(string const &path);
 
     // draws the model, and thus all its meshes
-    void Draw(RenderShader shader);
+    void Draw(RenderShader &shader);
 
     void setModelTransformation(glm::mat4 model);
     glm::mat4 modelTransformation();

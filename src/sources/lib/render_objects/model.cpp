@@ -7,7 +7,7 @@ Model::Model(string const &path)
 }
 
 // draws the model, and thus all its meshes
-void Model::Draw(RenderShader shader)
+void Model::Draw(RenderShader &shader)
 {
     shader.setTransform(MODEL_TRANSFORM_UNIFORM, mModelTransformation);
     for(unsigned int i = 0; i < meshes.size(); i++)
