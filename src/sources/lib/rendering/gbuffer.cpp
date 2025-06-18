@@ -10,7 +10,7 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
     #define GEN_TEXTURE(texture, attachment, RGBA_TYPE, data_type) \
     glGenTextures(1, &texture); \
     glBindTexture(GL_TEXTURE_2D, texture); \
-    glTexImage2D(GL_TEXTURE_2D, 0, RGBA_TYPE, mRenderParams.screenWidth, mRenderParams.screenHeight, 0, GL_RGBA, data_type, NULL); \
+    glTexImage2D(GL_TEXTURE_2D, 0, RGBA_TYPE, mRenderParams.frameWidth, mRenderParams.frameHeight, 0, GL_RGBA, data_type, NULL); \
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); \
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); \
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT##attachment, GL_TEXTURE_2D, texture, 0);
@@ -33,15 +33,17 @@ GBuffer::GBuffer(const RenderParams &renderParams) : IFrameBufferRenderer(render
     // - depth buffer used for depth testing
     glGenRenderbuffers(1, &mDepthRBO);
     glBindRenderbuffer(GL_RENDERBUFFER, mDepthRBO); 
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mRenderParams.screenWidth, mRenderParams.screenHeight);  
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, mRenderParams.frameWidth, mRenderParams.frameHeight);  
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepthRBO);
-
+    
     // make sure the frame buffer is complete
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "ERROR: Frame buffer incomplete" << std::endl;
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 GBuffer::~GBuffer()
@@ -55,11 +57,8 @@ GBuffer::~GBuffer()
 
 void GBuffer::render() 
 {
-    bind();
-
-    // render
-    // ------
     glEnable(GL_DEPTH_TEST); 
+    bind();
     for (RenderTargetGroup * target : mRenderTargets) {
         target->render(mRenderParams);
     }
@@ -71,5 +70,5 @@ void GBuffer::clear() const
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

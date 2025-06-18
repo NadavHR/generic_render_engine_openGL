@@ -12,19 +12,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <iostream>
 #include <filesystem>
-// #include "headers/shader.hpp"
-// #include "headers/renderer.hpp"
-// #include "headers/static_utils.hpp"
-// #include "headers/camera.hpp"
-// #include "headers/model.hpp"
-// #include "headers/model_render_object.hpp"
-// #include "headers/screen_renderer.hpp"
 #include "render_params.hpp"
 #include "input.hpp"
 #include "timing.hpp"
 #include "default_shaders.hpp"
 #include "deferred_renderer.hpp"
 #include "model_render_object.hpp"
+#include "test_scene.hpp"
 
 using namespace std;
 
@@ -48,13 +42,15 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    renderParams.screenWidth = 900;
-    renderParams.screenHeight = 500;
-    
+    renderParams.frameWidth = 900;
+    renderParams.frameHeight = 500;
+    renderParams.nearField = 0.1f;
+    renderParams.farField = 100.0f;
+    renderParams.fovRadians = 0.7853981633974483f;
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(renderParams.screenWidth, renderParams.screenHeight, "Render Engine", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(renderParams.frameWidth, renderParams.frameHeight, "Render Engine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -73,48 +69,98 @@ int main()
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
-    }
-    glEnable(GL_DEPTH_TEST);  
-    glEnable(GL_STENCIL_TEST);    
+    } 
     glEnable(GL_CULL_FACE);  
-
+    glDisable(GL_DEPTH_TEST); // by default should be disabled unless needed
     // finished setting up OpenGL API this part is where we run everything that must run first
     // ------------------------------------------------------------------
     DefaultShaders::initializeShaders();
 
-    // here we define everything we need such as renderers
+    // here we define everything we need such as scenes
     // ------------------------------------------------------------------ 
-    DeferredRenderer deferredRenderer(renderParams);
 
     // test ---------------------------------------------------------
-    Model testModel("/assets/models/asteroid/asteroid.gltf");
-    glm::vec3 testPosition = glm::vec3(0, 0, -1);    
+    RenderShader &ambientLightShader = *DefaultShaders::deferredAmbientLight;
+    RenderShader &pointLightShader = *DefaultShaders::deferredPointLight;
+    RenderShader &modelRenderShader = *DefaultShaders::modelRenderDeferredHDR;
+    RenderShader &toneMappingShader = *DefaultShaders::toneMapper;
+    RenderShader &copyShader = *DefaultShaders::copyBufferShader;
+    Model testModel("./assets/models/asteroid/asteroid.gltf");
+    DeferredRenderer deferredRenderer(renderParams);
+    // transformation
+
+    glm::vec3 testPosition = glm::vec3(0, 0, -5); 
+    glm::vec3 testLightPosition = glm::vec3(1, 1, -4);    
     glm::vec3 testRotation = glm::vec3(0, 0, 0);
     glm::vec3 testScale = glm::vec3(1, 1, 1);
-    glm::vec3 testColor = glm::vec3(1, 1, 1);
-    float testLinear = 1.0f;
-    float testQuadratic = 1.0f;
-    float testThreshold = 1.0f; 
-    std::shared_ptr<ModelRenderObject> testModelRenderObject = std::shared_ptr<ModelRenderObject>(new ModelRenderObject(testModel, testPosition, testRotation, testScale));
-    std::shared_ptr<DeferredPointLight> testPointLight = std::shared_ptr<DeferredPointLight>(new DeferredPointLight(testPosition, testColor, testLinear, testQuadratic, testThreshold));
-
-    RenderTargetGroup testTargetGroup(*DefaultShaders::modelRenderDeferredHDR);
+    glm::vec3 testColor = glm::vec3(1, 0, 0);
+    glm::vec3 testColor2 = glm::vec3(1);
+    float testLinear = 0.1f;
+    float testQuadratic = 0.01f;
+    float testThreshold = 0.8f; 
+    DefaultShaders::setRenderParamsForShaders(renderParams);
+    DefaultShaders::setViewForShaders(glm::vec3(0), glm::mat4(1));
+    auto testModelRenderObject = std::shared_ptr<ModelRenderObject>(new DynamicModelRenderObject(testModel, testPosition, testRotation, testScale));
+    auto testModelRenderObject2 = std::shared_ptr<ModelRenderObject>(new DynamicModelRenderObject(testModel, testLightPosition, testRotation, testScale));
+    auto testPointLight = std::shared_ptr<DeferredPointLight>(new DeferredPointLight(testLightPosition, testColor, testLinear, testQuadratic, testThreshold));
+    auto testPointLight2 = std::shared_ptr<DeferredPointLight>(new DeferredPointLight(testPosition, testColor2, testLinear, testQuadratic, testThreshold));
+    RenderTargetGroup testTargetGroup(modelRenderShader);
+    std::shared_ptr<ScreenRenderObject> testDrawToScreen = std::shared_ptr<ScreenRenderObject>(new ScreenRenderObject());
+    testTargetGroup.addRenderObject(testModelRenderObject2);
     testTargetGroup.addRenderObject(testModelRenderObject);
+    testTargetGroup.addRenderObject(testDrawToScreen);
     deferredRenderer.addRenderTargetGroup(testTargetGroup);
     deferredRenderer.addPointLight(testPointLight);
+    deferredRenderer.addPointLight(testPointLight2);
+
+    ScreenRenderObject screenRenderer;
+    // TestScene testScene = TestScene();
+    // glfwSetWindowSize(window, testScene.renderParams.frameWidth, testScene.renderParams.frameHeight);
+    // testScene.init();
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    while (true)
+    {
+        // #define DISPLAY(texture) \
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);\
+        // DefaultShaders::copyBufferShader->use(); \
+        // DefaultShaders::copyBufferShader->setTexture2D("Buffer", 0, texture);\
+        // screenRenderer.render(*DefaultShaders::copyBufferShader); \
+        // glfwSwapBuffers(window); \
+        // glfwPollEvents();
+
+        // DefaultShaders::setRenderParamsForShaders(renderParams);
+        // DefaultShaders::setViewForShaders(glm::vec3(0), glm::mat4(1));
+        // deferredRenderer.getGbuffer().render();
+
+        // // deferredRenderer.getGbuffer().render();
+        // DISPLAY(deferredRenderer.getGbuffer().getNormalBuffer())
+        // DISPLAY(deferredRenderer.getGbuffer().getAlbedoSpecBuffer())
+        // DISPLAY(deferredRenderer.getGbuffer().getPositionBuffer())
+
+        // deferredRenderer.getGbuffer().render();
+
+        // DISPLAY(deferredRenderer.getGbuffer().getNormalBuffer())
+        // DISPLAY(deferredRenderer.getGbuffer().getAlbedoSpecBuffer())
+        // DISPLAY(deferredRenderer.getGbuffer().getPositionBuffer())
+        deferredRenderer.render();
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        deferredRenderer.toneMap();
+        // testScene.renderTo(0);
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+    
     // test ---------------------------------------------------------
 
-    // transformation
-    glm::mat4 projection = renderParams.getProjectionMatrix();
     // render loop
-    // -----------    
-    long lastFrameSec = static_cast<float>(glfwGetTime());
+    // ---------------------------------------------------------------
+    double lastFrameSec = glfwGetTime();
 
     while (!glfwWindowShouldClose(window))
     {
         glEnable(GL_DEPTH_TEST);  // enable depth test
         // renderer.clear(); 
-        long currentFrameSec = glfwGetTime();
+        double currentFrameSec = glfwGetTime();
         deltaTimeSec = static_cast<float>(currentFrameSec - lastFrameSec);
         lastFrameSec = currentFrameSec;
 

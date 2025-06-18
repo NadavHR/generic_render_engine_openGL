@@ -5,11 +5,11 @@
 #include <glm/ext/matrix_clip_space.hpp>
 class RenderParams {
     public:
-        uint16_t screenWidth = 1200, screenHeight = 720;
+        uint16_t frameWidth = 1200, frameHeight = 720;
         float fovRadians = 0.7853981633974483f;
         float nearField = 0.1, farField = 1000.0;
         glm::mat4 getProjectionMatrix() const {
-            return glm::perspective(fovRadians, (float)screenWidth / (float)screenHeight, nearField, farField);
+            return glm::perspective(fovRadians, (float)frameWidth / (float)frameHeight, nearField, farField);
         }
 };
 

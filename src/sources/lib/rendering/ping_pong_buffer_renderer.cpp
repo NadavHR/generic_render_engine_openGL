@@ -21,6 +21,7 @@ PingPongBufferRenderer::PingPongBufferRenderer(RenderTargetGroup targetGroup, co
         // bind the texture
         glBindTexture(GL_TEXTURE_2D, mBuffers[mOnWhichBuffer].mReadTexture);
     });
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 unsigned int PingPongBufferRenderer::getOutputTexture()
@@ -82,7 +83,6 @@ void PingPongBuffer::clear() const {
     glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void PingPongBuffer::setReadTexture(unsigned int readTexture)
