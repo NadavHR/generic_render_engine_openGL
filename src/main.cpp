@@ -70,6 +70,7 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     } 
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glEnable(GL_CULL_FACE);  
     glDisable(GL_DEPTH_TEST); // by default should be disabled unless needed
     // finished setting up OpenGL API this part is where we run everything that must run first
@@ -83,13 +84,6 @@ int main()
     TestScene testScene = TestScene();
     glfwSetWindowSize(window, testScene.renderParams.frameWidth, testScene.renderParams.frameHeight);
     testScene.init();
-    while (true)
-    {
-        testScene.renderTo(0);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
-    
     // test ---------------------------------------------------------
 
     // render loop
@@ -105,8 +99,10 @@ int main()
         lastFrameSec = currentFrameSec;
 
         cout << 1.0 / deltaTimeSec << endl;
-        
-        // renderer.render();
+
+        // test ------------------------------------
+        testScene.renderTo(0);
+        // test ------------------------------------
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

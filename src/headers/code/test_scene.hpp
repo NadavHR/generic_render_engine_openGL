@@ -6,7 +6,8 @@
 
 class TestScene : public IDeferredHdrScene {
     private:
-        Model mTestModel = Model("./assets/models/asteroid/asteroid.gltf");
+        Model mTestAsteroidModel = Model("./assets/models/asteroid/asteroid.gltf");
+        Model mTestSpaceshipModel = Model("./assets/models/spaceship/basic_spaceship.gltf");
         RenderTargetGroup mTargetGroup = RenderTargetGroup(*DefaultShaders::modelRenderDeferredHDR);
     public:
         void init() override;
