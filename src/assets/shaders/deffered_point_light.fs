@@ -15,7 +15,8 @@ uniform vec3 ViewPos;
 uniform float quadratic, linear, lightThreshold;
 
 const float e = exp(1); // the mathematical constant e
-const float KSPEC = 1.5; // the lower the value the softer the base lighting, if at 0 the lighting will be completely uniform regardless of normal direction if the specular map is black
+const float KSPEC = 0.00001; // the lower the value the softer the base lighting, 
+// if at 0 the lighting will be completely uniform regardless of normal direction if the specular map is black
 void main()
 {             
     // retrieve data from G-buffer
@@ -34,16 +35,17 @@ void main()
     
     // // diffuse
     vec3 lightDir = normalize(Position - FragPos);
-    // vec3 diffuse = max(dot(Normal, lightDir), 0.0) * Albedo * color;
+    float lambertianDiffuse = max(dot(Normal, lightDir), 0.0);
     // specular
     vec3 halfwayDir = normalize(lightDir + viewDir);  
     float normDotHalfway = max(dot(Normal, halfwayDir), 0.0);
-    float colorReflected = (Specular + 1) * exp(-((Specular + KSPEC) * e) * pow((normDotHalfway - 1) , 2));
-    vec3 lighting = color * colorReflected * Albedo;
+    float specular = ((1/(Specular + KSPEC )) + 1) * exp(-((1/(Specular + KSPEC)) * e) * pow((normDotHalfway - 1) , 2));
+    vec3 lighting = color * Albedo * (specular + lambertianDiffuse);
 
     FragColor = vec4(BaseColor + lighting, 1.0);
+    // FragColor = vec4(lambertianDiffuse + BaseColor, 1.0);
     // FragColor = vec4(lighting, 1.0);
-    // FragColor = vec4(vec3(specular), 1.0);
+    // FragColor = vec4(vec3(Specular), 1.0);
     // FragColor = vec4(vec3(Albedo), 1.0);
     // FragColor = vec4(vec3(Normal), 1.0);
 

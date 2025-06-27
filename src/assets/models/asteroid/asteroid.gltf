@@ -1,8 +1,12 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.6.16",
+        "generator" : "Khronos glTF Blender I/O v4.4.56",
         "version" : "2.0"
     },
+    "extensionsUsed":[
+		"KHR_materials_specular",
+		"KHR_materials_ior"
+	],
     "scene" : 0,
     "scenes" : [
         {
@@ -57,6 +61,16 @@
     "materials" : [
         {
             "doubleSided" : true,
+            "extensions":{
+				"KHR_materials_specular":{
+					"specularTexture":{
+						"index":2
+					}
+				},
+				"KHR_materials_ior":{
+					"ior":1.4500000476837158
+				}
+			},
             "name" : "Material.001",
             "normalTexture" : {
                 "index" : 0,
@@ -95,6 +109,10 @@
         {
             "sampler" : 0,
             "source" : 1
+        },
+        {
+            "sampler" : 0,
+            "source" : 2
         }
     ],
     "images" : [
@@ -107,7 +125,12 @@
             "mimeType" : "image/png",
             "name" : "Material",
             "uri" : "Material-1.png"
-        }
+        },
+        {
+			"mimeType":"image/png",
+			"name":"Material Specular",
+			"uri":"Material Specular.png"
+		}
     ],
     "accessors" : [
         {

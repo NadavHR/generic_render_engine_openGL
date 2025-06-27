@@ -6,7 +6,7 @@
 
 class TestScene : public IDeferredHdrScene {
     private:
-        Model mTestAsteroidModel = Model("./assets/models/asteroid/asteroid.gltf");
+        Model mTestSphereModel = Model("./assets/models/sphere/sphere.gltf");
         Model mTestSpaceshipModel = Model("./assets/models/spaceship/basic_spaceship.gltf");
         RenderTargetGroup mTargetGroup = RenderTargetGroup(*DefaultShaders::modelRenderDeferredHDR);
     public:
