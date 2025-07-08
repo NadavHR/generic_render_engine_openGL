@@ -8,6 +8,8 @@ class TestScene : public IDeferredHdrScene {
     private:
         Model mTestSphereModel = Model("./assets/models/sphere/sphere.gltf");
         Model mTestSpaceshipModel = Model("./assets/models/spaceship/basic_spaceship.gltf");
+        std::shared_ptr<DynamicModelRenderObject> mTestModelRenderObject;
+        std::shared_ptr<DynamicModelRenderObject> mTestModelRenderObject2;
         RenderTargetGroup mTargetGroup = RenderTargetGroup(*DefaultShaders::modelRenderDeferredHDR);
     public:
         void init() override;

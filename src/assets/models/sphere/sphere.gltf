@@ -4,7 +4,8 @@
 		"version":"2.0"
 	},
 	"extensionsUsed":[
-		"KHR_materials_specular"
+		"KHR_materials_specular",
+		"KHR_materials_ior"
 	],
 	"scene":0,
 	"scenes":[
@@ -29,6 +30,9 @@
 					"specularTexture":{
 						"index":0
 					}
+				},
+				"KHR_materials_ior":{
+					"ior":1.4500000476837158
 				}
 			},
 			"name":"Material.001",
@@ -38,9 +42,7 @@
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":2
-				},
-				"metallicFactor":0,
-				"roughnessFactor":0.5
+				}
 			}
 		}
 	],
@@ -52,9 +54,12 @@
 					"attributes":{
 						"POSITION":0,
 						"NORMAL":1,
-						"TEXCOORD_0":2
+						"TEXCOORD_0":2,
+						"COLOR_0":3,
+						"COLOR_1":4,
+						"COLOR_2":5
 					},
-					"indices":3,
+					"indices":6,
 					"material":0
 				}
 			]
@@ -82,8 +87,8 @@
 		},
 		{
 			"mimeType":"image/png",
-			"name":"Material",
-			"uri":"Material.png"
+			"name":"Normal",
+			"uri":"Normal.png"
 		},
 		{
 			"mimeType":"image/png",
@@ -122,6 +127,26 @@
 		},
 		{
 			"bufferView":3,
+			"componentType":5126,
+			"count":63,
+			"type":"VEC3"
+		},
+		{
+			"bufferView":4,
+			"componentType":5123,
+			"count":63,
+			"normalized":true,
+			"type":"VEC4"
+		},
+		{
+			"bufferView":5,
+			"componentType":5123,
+			"count":63,
+			"normalized":true,
+			"type":"VEC4"
+		},
+		{
+			"bufferView":6,
 			"componentType":5123,
 			"count":240,
 			"type":"SCALAR"
@@ -148,8 +173,26 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":480,
+			"byteLength":756,
 			"byteOffset":2016,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":504,
+			"byteOffset":2772,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":504,
+			"byteOffset":3276,
+			"target":34962
+		},
+		{
+			"buffer":0,
+			"byteLength":480,
+			"byteOffset":3780,
 			"target":34963
 		}
 	],
@@ -161,7 +204,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":2496,
+			"byteLength":4260,
 			"uri":"sphere.bin"
 		}
 	]

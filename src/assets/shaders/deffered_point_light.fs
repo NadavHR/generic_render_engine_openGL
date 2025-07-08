@@ -15,7 +15,7 @@ uniform vec3 ViewPos;
 uniform float quadratic, linear, lightThreshold;
 
 const float e = exp(1); // the mathematical constant e
-const float KSPEC = 0.00001; // the lower the value the softer the base lighting, 
+const float KSPEC = 0.0000001; // the lower the value the softer the base lighting, 
 // if at 0 the lighting will be completely uniform regardless of normal direction if the specular map is black
 void main()
 {             
@@ -23,7 +23,7 @@ void main()
     vec3 FragPos = texture(gPosition, TexCoords).rgb;
     vec3 Normal = texture(gNormal, TexCoords).rgb;
     vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
-    float Specular = texture(gAlbedoSpec, TexCoords).a;
+    float Specular = pow(texture(gAlbedoSpec, TexCoords).a, 2);
     vec3 BaseColor = texture(hdrBuffer, TexCoords).rgb;
 
     float dis = length(Position - FragPos);
@@ -45,7 +45,7 @@ void main()
     FragColor = vec4(BaseColor + lighting, 1.0);
     // FragColor = vec4(lambertianDiffuse + BaseColor, 1.0);
     // FragColor = vec4(lighting, 1.0);
-    // FragColor = vec4(vec3(Specular), 1.0);
+    // FragColor = vec4(vec3(specular), 1.0);
     // FragColor = vec4(vec3(Albedo), 1.0);
     // FragColor = vec4(vec3(Normal), 1.0);
 
